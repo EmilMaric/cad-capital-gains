@@ -157,11 +157,6 @@ def test_show_capgains_table_known_and_unknown_ticker(db, capfd):
 def test_show_capgains_table_empty_db(db, capfd):
     col = db.collection
 
-    objects = []
-
-    for obj in objects:
-        col.insert_one(obj)
-
     CapGainsShow.show_capgains_table(col, ['ANET', 'GOOG', 'FB'])
 
     out, err = capfd.readouterr()
