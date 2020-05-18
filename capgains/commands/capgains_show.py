@@ -9,14 +9,12 @@ pd.set_option('display.max_rows', None,
               'display.width', 1000)
 
 
-def show_capgains_table(collection, tickers=None):
+def show_capgains_table(data, tickers=None):
     global columns
 
-    query = build_query(tickers)
-    results_count = collection.count_documents(query)
-    results = collection.find(query)
+    results = filter_data(data, tickers)
 
-    if results_count == 0:
+    if len(results) == 0:
         print("No results found")
 
     else:
@@ -24,10 +22,10 @@ def show_capgains_table(collection, tickers=None):
         print(df[columns])
 
 
-def build_query(tickers):
-    query = dict()
+def filter_data(data, tickers):
+    res = data
 
     if tickers is not None and len(tickers) > 0:
-        query['ticker'] = {"$in": tickers}
+        res = list(filter(lambda d: d['ticker'] in tickers, data))
 
-    return query
+    return res

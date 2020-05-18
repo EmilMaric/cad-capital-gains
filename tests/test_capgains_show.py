@@ -1,18 +1,9 @@
 import capgains.commands.capgains_show as CapGainsShow
-import pytest
-import mongomock
 import datetime
 import textwrap
 
 
-@pytest.fixture()
-def db():
-    return mongomock.MongoClient().db
-
-
-def test_show_capgains_table_default(db, capfd):
-    col = db.collection
-
+def test_show_capgains_table_default(capfd):
     objects = [dict(id=0,
                     ticker='ANET',
                     date=datetime.datetime(2018, 2, 15),
@@ -33,10 +24,7 @@ def test_show_capgains_table_default(db, capfd):
                     share_balance=63,
                     capital_gain=0)]
 
-    for obj in objects:
-        col.insert_one(obj)
-
-    CapGainsShow.show_capgains_table(col)
+    CapGainsShow.show_capgains_table(objects)
 
     out, err = capfd.readouterr()
 
@@ -47,9 +35,7 @@ def test_show_capgains_table_default(db, capfd):
     """)  # noqa: E501
 
 
-def test_show_capgains_table_both_tickers(db, capfd):
-    col = db.collection
-
+def test_show_capgains_table_both_tickers(capfd):
     objects = [dict(id=0,
                     ticker='ANET',
                     date=datetime.datetime(2018, 2, 15),
@@ -70,10 +56,7 @@ def test_show_capgains_table_both_tickers(db, capfd):
                     share_balance=63,
                     capital_gain=0)]
 
-    for obj in objects:
-        col.insert_one(obj)
-
-    CapGainsShow.show_capgains_table(col, ['ANET', 'GOOGL'])
+    CapGainsShow.show_capgains_table(objects, ['ANET', 'GOOGL'])
 
     out, err = capfd.readouterr()
 
@@ -84,9 +67,7 @@ def test_show_capgains_table_both_tickers(db, capfd):
     """)  # noqa: E501
 
 
-def test_show_capgains_table_one_ticker(db, capfd):
-    col = db.collection
-
+def test_show_capgains_table_one_ticker(capfd):
     objects = [dict(id=0,
                     ticker='ANET',
                     date=datetime.datetime(2018, 2, 15),
@@ -107,10 +88,7 @@ def test_show_capgains_table_one_ticker(db, capfd):
                     share_balance=63,
                     capital_gain=0)]
 
-    for obj in objects:
-        col.insert_one(obj)
-
-    CapGainsShow.show_capgains_table(col, ['ANET'])
+    CapGainsShow.show_capgains_table(objects, ['ANET'])
 
     out, err = capfd.readouterr()
 
@@ -120,9 +98,7 @@ def test_show_capgains_table_one_ticker(db, capfd):
     """)  # noqa: E501
 
 
-def test_show_capgains_table_unknown_ticker(db, capfd):
-    col = db.collection
-
+def test_show_capgains_table_unknown_ticker(capfd):
     objects = [dict(id=0,
                     ticker='ANET',
                     date=datetime.datetime(2018, 2, 15),
@@ -143,10 +119,7 @@ def test_show_capgains_table_unknown_ticker(db, capfd):
                     share_balance=63,
                     capital_gain=0)]
 
-    for obj in objects:
-        col.insert_one(obj)
-
-    CapGainsShow.show_capgains_table(col, ['FB'])
+    CapGainsShow.show_capgains_table(objects, ['FB'])
 
     out, err = capfd.readouterr()
 
@@ -155,9 +128,7 @@ def test_show_capgains_table_unknown_ticker(db, capfd):
     """)  # noqa: E501
 
 
-def test_show_capgains_table_known_and_unknown_ticker(db, capfd):
-    col = db.collection
-
+def test_show_capgains_table_known_and_unknown_ticker(capfd):
     objects = [dict(id=0,
                     ticker='ANET',
                     date=datetime.datetime(2018, 2, 15),
@@ -178,10 +149,7 @@ def test_show_capgains_table_known_and_unknown_ticker(db, capfd):
                     share_balance=63,
                     capital_gain=0)]
 
-    for obj in objects:
-        col.insert_one(obj)
-
-    CapGainsShow.show_capgains_table(col, ['GOOGL', 'FB'])
+    CapGainsShow.show_capgains_table(objects, ['GOOGL', 'FB'])
 
     out, err = capfd.readouterr()
 
@@ -191,10 +159,10 @@ def test_show_capgains_table_known_and_unknown_ticker(db, capfd):
     """)  # noqa: E501
 
 
-def test_show_capgains_table_empty_db(db, capfd):
-    col = db.collection
+def test_show_capgains_table_empty_input(capfd):
+    objects = []
 
-    CapGainsShow.show_capgains_table(col, ['ANET', 'GOOGL', 'FB'])
+    CapGainsShow.show_capgains_table(objects, ['ANET', 'GOOGL', 'FB'])
 
     out, err = capfd.readouterr()
 
