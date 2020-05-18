@@ -12,14 +12,20 @@ def show_capgains_table(collection, tickers=None):
                   'display.width', 1000)
 
     query = build_query(tickers)
+    results_count = collection.count_documents(query)
     results = collection.find(query)
-    df = pd.DataFrame([result for result in results]).sort_values('id')
-    print(df[columns])
+
+    if results_count == 0:
+        print("No results found")
+
+    else:
+        df = pd.DataFrame([result for result in results]).sort_values('id')
+        print(df[columns])
 
 
 def build_query(tickers):
     query = dict()
     if tickers is not None and len(tickers) > 0:
-        query['tickers'] = {"$in": tickers}
+        query['ticker'] = {"$in": tickers}
 
     return query
