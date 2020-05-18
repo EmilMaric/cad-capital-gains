@@ -41,7 +41,7 @@ def test_show_capgains_table_default(db, capfd):
     out, err = capfd.readouterr()
 
     assert out == textwrap.dedent("""\
-            date  quantity   price ticker
-    0 2018-02-15        21  307.96   ANET
-    1 2018-02-20        42  249.55   ANET
-    """)
+            date ticker transaction_type action  quantity   price  share_balance  capital_gain
+    0 2018-02-15   ANET    ESPP PURCHASE    BUY        21  307.96             21             0
+    1 2018-02-20   ANET         RSU VEST    BUY        42  249.55             63             0
+    """)  # noqa: E501
