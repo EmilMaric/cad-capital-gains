@@ -16,5 +16,5 @@ def capgains():
 @click.option('-t', '--ticker', metavar='TICKER',
               multiple=True, help="Stocks tickers to filter for")
 def show(transactions_csv, ticker):
-    transactions = TransactionsReader(transactions_csv).get_transactions()
+    transactions = TransactionsReader.get_transactions(transactions_csv)
     capgains_show(transactions, tickers=ticker)
