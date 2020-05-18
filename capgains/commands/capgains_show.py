@@ -1,47 +1,35 @@
-import pandas as pd
-import csv
-import os
+import click
+import tabulate
+
+# describes how to align the individual table columns
+colalign = (
+    "left",   # date
+    "left",   # transaction_type
+    "left",   # ticker
+    "left",   # action
+    "right",  # qty
+    "right",  # price
+    "right",  # commission
+)
 
 
-columns = ['date', 'ticker', 'transaction_type',
-           'action', 'quantity', 'price',
-           'share_balance', 'capital_gain']
-
-pd.set_option('display.max_rows', None,
-              'display.max_columns', None,
-              'display.width', 1000)
+def _filter_transaction(transaction, tickers=None):
+    if tickers and transaction.ticker not in tickers:
+        return False
+    return True
 
 
-def show_capgains_table(filepath, tickers=None):
-    if not os.path.isfile(filepath):
-        print("File does not exist")
+def capgains_show(transactions, tickers=None):
+    """Take a list of transactions and print them in tabular format."""
+    # prune transactions that don't match the filter options
+    filtered_transactions = list(filter(
+        lambda t: _filter_transaction(t, tickers=tickers), transactions))
+    if not filtered_transactions:
+        click.echo("No results found")
         return
-
-    # open csv file and load data into list of dicts (each row is a dict)
-    with open(filepath) as csv_file:
-        data = [{key: value for key, value in row.items()}
-                for row in csv.DictReader(csv_file)]
-
-        print_data(data, tickers)
-
-
-def print_data(data, tickers=None):
-    global columns
-
-    results = filter_data(data, tickers)
-
-    if len(results) == 0:
-        print("No results found")
-
-    else:
-        df = pd.DataFrame([result for result in results]).sort_values('id')
-        print(df[columns])
-
-
-def filter_data(data, tickers):
-    res = data
-
-    if tickers is not None and len(tickers) > 0:
-        res = list(filter(lambda d: d['ticker'] in tickers, data))
-
-    return res
+    transactions_dict = [t.to_dict() for t in filtered_transactions]
+    headers = transactions_dict[0].keys()
+    rows = [t.values() for t in transactions_dict]
+    output = tabulate.tabulate(rows, headers=headers, disable_numparse=True,
+                               colalign=colalign)
+    click.echo(output)
