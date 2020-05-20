@@ -14,8 +14,8 @@ class TransactionsReader:
         """Convert the CSV-file entries into a list of Transactions."""
         transactions = []
         try:
-            with open(csv_file) as f:
-                reader = csv.DictReader(f)
+            with open(csv_file, newline='') as f:
+                reader = csv.reader(f)
                 for entry_no, entry in enumerate(reader):
                     num_columns = len(entry)
                     if num_columns != Transaction.num_vals:
@@ -26,8 +26,8 @@ class TransactionsReader:
                             "entry has {}".format(entry_no,
                                                   Transaction.num_vals,
                                                   num_columns))
-                transaction = Transaction(*entry)
-                transactions.append(transaction)
+                    transaction = Transaction(*entry)
+                    transactions.append(transaction)
             return transactions
         except FileNotFoundError:
             raise ClickException("File not found: {}".format(csv_file))
