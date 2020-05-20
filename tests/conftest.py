@@ -4,6 +4,11 @@ from datetime import datetime as dt
 from capgains.transaction import Transaction
 
 
+@pytest.fixture(scope="session")
+def testfiles_dir(tmpdir_factory):
+    return tmpdir_factory.mktemp("testfiles")
+
+
 @pytest.fixture(scope='module')
 def transactions():
     trans = [
