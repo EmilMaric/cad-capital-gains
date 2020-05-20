@@ -58,9 +58,7 @@ def unreadable_file_path(tmpdir_factory):
 
 
 def test_transactions_reader_default(good_csv_file_path):
-    transactions = TransactionsReader.get_transactions(good_csv_file_path)
-
-    assert len(transactions) == 1
+    assert len(TransactionsReader.get_transactions(good_csv_file_path)) == 1
 
 
 def test_transactions_reader_columns_error(too_many_columns_csv_file_path):
