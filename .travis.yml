@@ -8,5 +8,7 @@ before_install:
 install:
   - poetry install -v
   - pip install tox-travis
+  - pip install flake8
 script:
   - tox
+  - flake8
