@@ -13,8 +13,8 @@ def capgains():
                         "tabular format. Filters can be applied to narrow "
                         "down the entries."))
 @click.argument('transactions-csv')
-@click.option('-t', '--ticker', metavar='TICKER',
+@click.option('-t', '--tickers', metavar='TICKERS',
               multiple=True, help="Stocks tickers to filter for")
-def show(transactions_csv, ticker):
+def show(transactions_csv, tickers):
     transactions = TransactionsReader.get_transactions(transactions_csv)
-    capgains_show(transactions, tickers=ticker)
+    capgains_show(transactions, tickers)
