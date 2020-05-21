@@ -9,16 +9,13 @@ def create_csv_file(directory, filename, data=None, is_readable=True):
     if data:
         with open(path, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-
             for row in data:
                 writer.writerow(row)
 
     if not is_readable:
         open(path, 'a').close()
-
-        """ set all write and execute permissions
-        to true and read permissions to false (333)
-        """
+        # set all write and execute permissions
+        # to true and read permissions to false (333)
         os.chmod(path,
                  stat.S_IWUSR |
                  stat.S_IXUSR |
