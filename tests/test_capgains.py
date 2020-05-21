@@ -20,7 +20,7 @@ def test_show_file_not_found(testfiles_dir):
     assert result.exit_code == 1
     assert result.output == """\
 Error: File not found: {}
-""".format(filepath)  # noqa: E501
+""".format(filepath)
 
 
 def test_show_no_ticker_arg(testfiles_dir):
