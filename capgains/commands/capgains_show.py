@@ -1,6 +1,7 @@
 import click
 import tabulate
 
+
 # describes how to align the individual table columns
 colalign = (
     "left",   # date
@@ -12,6 +13,15 @@ colalign = (
     "right",  # commission
 )
 
+floatfmt = (
+    None,   # date
+    None,   # transaction_type
+    None,   # ticker
+    None,   # action
+    None,  # qty
+    ",.2f",  # price
+    ",.2f",  # commission
+)
 
 def _filter_transaction(transaction, tickers=None):
     if tickers and transaction.ticker not in tickers:
@@ -27,9 +37,9 @@ def capgains_show(transactions, tickers=None):
     if not filtered_transactions:
         click.echo("No results found")
         return
-    transactions_dict = [t.to_dict() for t in filtered_transactions]
-    headers = transactions_dict[0].keys()
-    rows = [t.values() for t in transactions_dict]
-    output = tabulate.tabulate(rows, headers=headers, disable_numparse=True,
-                               colalign=colalign)
+    transaction_dicts = [t.to_dict() for t in filtered_transactions]
+    headers = transaction_dicts[0].keys()
+    rows = [t.values() for t in transaction_dicts]
+    output = tabulate.tabulate(rows, headers=headers, colalign=colalign,
+                               floatfmt=floatfmt)
     click.echo(output)
