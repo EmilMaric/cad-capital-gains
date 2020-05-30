@@ -16,8 +16,8 @@ def test_transactions_to_dict(transactions):
     # check that no extra values were added
     assert len(trans_dict) == Transaction.num_vals_show
 
-def test_transactions_to_dict_all(transactions):
-    trans_dict = transactions[0].to_dict(all_values=True)
+def test_transactions_to_dict_calculated(transactions):
+    trans_dict = transactions[0].to_dict(calculated_values=True)
 
     assert trans_dict['date'] == date(2018, 2, 15)
     assert trans_dict['transaction_type'] == 'ESPP PURCHASE'

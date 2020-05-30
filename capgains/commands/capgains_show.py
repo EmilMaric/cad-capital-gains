@@ -14,11 +14,11 @@ colalign = (
 )
 
 floatfmt = (
-    None,   # date
-    None,   # transaction_type
-    None,   # ticker
-    None,   # action
-    None,  # qty
+    None,    # date
+    None,    # transaction_type
+    None,    # ticker
+    None,    # action
+    None,    # qty
     ",.2f",  # price
     ",.2f",  # commission
 )

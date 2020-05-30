@@ -3,6 +3,13 @@ from collections import OrderedDict
 
 class Transaction:
     """Represents a transaction entry from the CSV-file"""
+    date_idx = 0
+    transaction_type_idx = 1
+    ticker_idx = 2
+    action_idx = 3
+    qty_idx = 4
+    price_idx = 5
+    commission_idx = 6
     num_vals_show = 7
     num_vals_calculated = 5
     num_vals_all = num_vals_show + num_vals_calculated
@@ -92,7 +99,7 @@ class Transaction:
     def acb(self, acb):
         self._acb = acb
 
-    def to_dict(self, all_values=False):
+    def to_dict(self, calculated_values=False):
         d = OrderedDict()
         d['date'] = self.date
         d['transaction_type'] = self.transaction_type
@@ -101,7 +108,7 @@ class Transaction:
         d['qty'] = self.qty
         d['price'] = self.price
         d['commission'] = self.commission
-        if all_values:
+        if calculated_values:
             d['share_balance'] = self.share_balance
             d['proceeds'] = self.proceeds
             d['capital_gain'] = self.capital_gain

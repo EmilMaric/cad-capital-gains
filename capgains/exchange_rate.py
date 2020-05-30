@@ -33,8 +33,8 @@ class ExchangeRate:
         try:
             params = {"start_date": start_date.isoformat(),
                       "end_date": end_date.isoformat()}
-            format_str = "FX{}{}".format(self._currency_from, self.currency_to)
-            url = "{}/{}/json".format(self.valet_obs_url, format_str)
+            forex_str = "FX{}{}".format(self._currency_from, self.currency_to)
+            url = "{}/{}/json".format(self.valet_obs_url, forex_str)
             response = requests.get(url = url, params=params)
             try:
                 rates = response.json()[self.observations]
@@ -43,8 +43,16 @@ class ExchangeRate:
             "No observations were found using currency {}"
             .format(self._currency_from))
             self._rates = dict()
-            for rate in rates:
-                self._rates[rate[self.date]] = float(rate[format_str][self.value])
+            for day_rate in rates:
+                date = day_rate[self.date]
+                rate = float(day_rate[forex_str][self.value])
+                self._rates[date] = rate
+        except requests.ConnectionError as e:
+            raise ClickException(
+                "Error with internet connection to URL {} : {}".format(url, e))
+        except requests.HTTPError as e:
+            raise ClickException(
+                "HTTP request for URL {} was unsuccessful : {}".format(url, e))
         except requests.exceptions.Timeout as e:
             raise ClickException(
                 "Request timeout on URL {} : {}".format(url, e))
