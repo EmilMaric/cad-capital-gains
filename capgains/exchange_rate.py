@@ -19,9 +19,9 @@ class ExchangeRate:
         if end_date < start_date:
             raise ClickException(
         "End date must be after start date")
-        if end_date < self.min_date:
+        if start_date < self.min_date:
             raise ClickException(
-        "Date range before minimum date {}".format(self.min_date.isoformat()))
+        "Start date is before minimum date {}".format(self.min_date.isoformat()))
 
         # always move the start date back 7 days in case the start
         # date, end date, and all days in between are all weekends/holidays
