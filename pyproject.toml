@@ -15,6 +15,7 @@ requests = "^2.23.0"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 tox = "^3.15.0"
+requests-mock = "^1.8.0"
 
 [tool.poetry.scripts]
 capgains = "capgains.cli:capgains"
