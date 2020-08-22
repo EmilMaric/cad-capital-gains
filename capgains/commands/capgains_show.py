@@ -23,6 +23,7 @@ floatfmt = (
     ",.2f",  # commission
 )
 
+
 def _filter_transaction(transaction, tickers=None):
     if tickers and transaction.ticker not in tickers:
         return False

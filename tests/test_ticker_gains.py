@@ -1,4 +1,3 @@
-from datetime import date, timedelta
 from capgains.ticker_gains import TickerGains
 import pytest
 
@@ -8,6 +7,7 @@ def test_ticker_gains_negative_balance(acb_transactions):
         transactions = acb_transactions
         tg = TickerGains(transactions[2].ticker)
         tg.add_transaction(transactions[2], 1.2622)
+
 
 def test_ticker_gains_ok(acb_transactions):
     transactions = acb_transactions

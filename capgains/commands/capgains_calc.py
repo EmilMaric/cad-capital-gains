@@ -1,7 +1,5 @@
 import click
 import tabulate
-import requests
-from datetime import datetime, timedelta
 from capgains.exchange_rate import ExchangeRate
 from capgains.ticker_gains import TickerGains
 
@@ -36,6 +34,7 @@ floatfmt = (
     ",.2f",  # acb
 )
 
+
 def _filter_transaction(transaction, max_year, ticker):
     if transaction.ticker != ticker:
         return False
@@ -55,7 +54,8 @@ def _filter_calculated_transaction(transaction, year):
 def get_calculated_dicts(transactions, year, ticker):
     # prune transactions that don't match the filter options
     filtered_transactions = list(filter(
-        lambda t: _filter_transaction(t, max_year=year, ticker=ticker), transactions))
+        lambda t: _filter_transaction(t, max_year=year, ticker=ticker),
+        transactions))
     if not filtered_transactions:
         return None
     er = ExchangeRate('USD', transactions[0].date, transactions[-1].date)
@@ -65,7 +65,7 @@ def get_calculated_dicts(transactions, year, ticker):
         tg.add_transaction(transaction, rate)
     year_transactions = list(filter(
         lambda t: _filter_calculated_transaction(t, year),
-                    filtered_transactions))
+        filtered_transactions))
     if not year_transactions:
         return None
     return [t.to_dict(calculated_values=True) for t in year_transactions]
@@ -86,7 +86,7 @@ def capgains_calc(transactions, year, tickers=None):
         rows = [t.values() for t in calculated_dicts]
         output = tabulate.tabulate(rows, headers=headers,
                                    colalign=colalign, floatfmt=floatfmt)
-        click.echo("{}-{}".format(ticker,year))
+        click.echo("{}-{}".format(ticker, year))
         click.echo("{}\n".format(output))
     if not calculation_made:
         click.echo("No calculations made")

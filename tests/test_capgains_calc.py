@@ -3,6 +3,7 @@ import capgains.commands.capgains_calc as CapGainsCalc
 from capgains.transaction import Transaction
 from datetime import date
 
+
 @pytest.fixture(scope='module')
 def acb_transactions():
     trans = [

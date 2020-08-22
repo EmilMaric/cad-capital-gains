@@ -16,6 +16,7 @@ def test_transactions_to_dict(transactions):
     # check that no extra values were added
     assert len(trans_dict) == Transaction.num_vals_show
 
+
 def test_transactions_to_dict_calculated(transactions):
     trans_dict = transactions[0].to_dict(calculated_values=True)
 
@@ -26,11 +27,11 @@ def test_transactions_to_dict_calculated(transactions):
     assert trans_dict['qty'] == 21
     assert trans_dict['price'] == 307.96
     assert trans_dict['commission'] == 20.99
-    assert trans_dict['share_balance'] == None
-    assert trans_dict['proceeds'] == None
-    assert trans_dict['capital_gain'] == None
-    assert trans_dict['acb_delta'] == None
-    assert trans_dict['acb'] == None
+    assert trans_dict['share_balance'] is None
+    assert trans_dict['proceeds'] is None
+    assert trans_dict['capital_gain'] is None
+    assert trans_dict['acb_delta'] is None
+    assert trans_dict['acb'] is None
 
     # check that no extra values were added
     assert len(trans_dict) == Transaction.num_vals_all

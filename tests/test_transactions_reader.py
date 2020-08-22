@@ -13,9 +13,9 @@ def test_transactions_reader_default(testfiles_dir):
                                  'ESPP PURCHASE',
                                  'ANET',
                                  'BUY',
-                                  21,
-                                  307.96,
-                                  20.99]],
+                                 21,
+                                 307.96,
+                                 20.99]],
                                True)
 
     assert len(TransactionsReader.get_transactions(filepath)) == 1
@@ -30,9 +30,9 @@ def test_transactions_reader_columns_error(testfiles_dir):
                                      'ESPP PURCHASE',
                                      'ANET',
                                      'BUY',
-                                      21,
-                                      307.96,
-                                      20.99,
+                                     21,
+                                     307.96,
+                                     20.99,
                                      'EXTRA_COLUMN_VALUE']],
                                    True)
         TransactionsReader.get_transactions(filepath)
@@ -62,15 +62,15 @@ def test_transactions_read_wrong_dates_order(testfiles_dir):
                                      'RSU VEST',
                                      'GOOGL',
                                      'BUY',
-                                      42,
-                                      249.55,
-                                      0.0],
+                                     42,
+                                     249.55,
+                                     0.0],
                                     [date(2018, 2, 15),
                                      'ESPP PURCHASE',
                                      'ANET',
                                      'BUY',
-                                      21,
-                                      307.96,
-                                      20.99]],
-                                    True)
+                                     21,
+                                     307.96,
+                                     20.99]],
+                                   True)
         TransactionsReader.get_transactions(filepath)

@@ -15,7 +15,7 @@ def test_exchange_rate_end_after_start():
     with pytest.raises(ClickException):
         end = date(2020, 5, 22)
         start = end + timedelta(days=1)
-        er = ExchangeRate('USD', start, end)
+        ExchangeRate('USD', start, end)
 
 
 def test_exchange_rate_only_weekend():
@@ -26,21 +26,21 @@ def test_exchange_rate_only_weekend():
 
 def test_exchange_rate_non_existent_currency():
     with pytest.raises(ClickException):
-        er = ExchangeRate('IMAGINARYMONEY',
-                          ExchangeRate.min_date,
-                          ExchangeRate.min_date)
+        ExchangeRate('IMAGINARYMONEY',
+                     ExchangeRate.min_date,
+                     ExchangeRate.min_date)
 
 
 def test_exchange_rate_init_before_min_date():
     with pytest.raises(ClickException):
         early = ExchangeRate.min_date - timedelta(days=1)
-        er = ExchangeRate('USD', early, early)
+        ExchangeRate('USD', early, early)
 
 
 def test_exchange_rate_get_before_min_date():
     with pytest.raises(ClickException):
         early = ExchangeRate.min_date - timedelta(days=1)
-        er = ExchangeRate('USD', early, early)
+        ExchangeRate('USD', early, early)
 
 
 def test_exchange_rate_ok_date(USD_exchange_rates):
@@ -52,5 +52,6 @@ def test_exchange_rate_ok_date(USD_exchange_rates):
 def test_exchange_rate_weekend_date(USD_exchange_rates):
     # set the date on a Sunday, expect fridays rate
     friday = date(2020, 5, 22)
+    expected_rate = USD_exchange_rates.get_rate(friday)
     sunday = date(2020, 5, 24)
-    assert USD_exchange_rates.get_rate(sunday) == 1.4015
+    assert USD_exchange_rates.get_rate(sunday) == expected_rate

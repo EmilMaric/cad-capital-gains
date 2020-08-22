@@ -18,12 +18,13 @@ class ExchangeRate:
 
         if end_date < start_date:
             raise ClickException(
-        "End date must be after start date")
+                "End date must be after start date")
         if start_date < self.min_date:
             raise ClickException(
-        "Start date is before minimum date {}".format(self.min_date.isoformat()))
+                "Start date is before minimum date {}"
+                .format(self.min_date.isoformat()))
 
-        # always move the start date back 7 days in case the start
+        # Always move the start date back 7 days in case the start
         # date, end date, and all days in between are all weekends/holidays
         # where no exchange rate can be found
         start_date -= timedelta(days=7)
@@ -35,13 +36,13 @@ class ExchangeRate:
                       "end_date": end_date.isoformat()}
             forex_str = "FX{}{}".format(self._currency_from, self.currency_to)
             url = "{}/{}/json".format(self.valet_obs_url, forex_str)
-            response = requests.get(url = url, params=params)
+            response = requests.get(url=url, params=params)
             try:
                 rates = response.json()[self.observations]
             except KeyError:
                 raise ClickException(
-            "No observations were found using currency {}"
-            .format(self._currency_from))
+                    "No observations were found using currency {}"
+                    .format(self._currency_from))
             self._rates = dict()
             for day_rate in rates:
                 date = day_rate[self.date]
@@ -58,7 +59,7 @@ class ExchangeRate:
                 "Request timeout on URL {} : {}".format(url, e))
         except requests.exceptions.TooManyRedirects as e:
             raise ClickException(
-                "URL {} was bad".format(url))
+                "URL {} was bad : {}".format(url, e))
         except requests.exceptions.RequestException as e:
             raise ClickException(
                 "Catastrophic error with URL {} : {}".format(url, e))
@@ -76,14 +77,14 @@ class ExchangeRate:
         return self._end_date
 
     def _get_last_rate_in_range(self, date):
-        """Gets the exchange rate for the closest preceeding date with a rate"""
+        """Gets the exchange rate for the closest
+        preceeding date with a rate"""
         while date > self.min_date:
             date_str = date.isoformat()
             if date_str in self._rates:
                 return self._rates[date_str]
             date = date - timedelta(days=1)
         return None
-
 
     def get_rate(self, date):
         """Gets the exchange rate either:
@@ -93,8 +94,5 @@ class ExchangeRate:
         rate = self._get_last_rate_in_range(date)
         if not rate:
             raise ClickException(
-            "Unable to find exchange rate on {}".format(date))
+                "Unable to find exchange rate on {}".format(date))
         return rate
-        
-        
-            

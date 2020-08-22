@@ -56,14 +56,14 @@ class Transaction:
     @property
     def commission(self):
         return self._commission
-        
+
     @property
     def share_balance(self):
         return self._share_balance
 
     @share_balance.setter
     def share_balance(self, share_balance):
-        if(share_balance < 0): 
+        if(share_balance < 0):
             raise ValueError("Share balance cannot be negative")
         self._share_balance = share_balance
 
@@ -73,7 +73,7 @@ class Transaction:
 
     @proceeds.setter
     def proceeds(self, proceeds):
-         self._proceeds = proceeds
+        self._proceeds = proceeds
 
     @property
     def capital_gain(self):
