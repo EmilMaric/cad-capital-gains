@@ -3,9 +3,13 @@ import pytest
 
 
 def test_ticker_gains_negative_balance(acb_transactions):
-    with pytest.raises(ValueError):
-        tg = TickerGains(acb_transactions[2].ticker)
-        tg.add_transaction(acb_transactions[2], 1.2622)
+    """ If the first transaction added is a sell, it is illegal since
+    this causes a negative balance, which is impossible"""
+    for transaction in acb_transactions:
+        if transaction.action == 'SELL':
+            with pytest.raises(ValueError):
+                tg = TickerGains(acb_transactions[2].ticker)
+                tg.add_transaction(acb_transactions[2], 1.2622)
 
 
 def test_ticker_gains_ok(acb_transactions):
