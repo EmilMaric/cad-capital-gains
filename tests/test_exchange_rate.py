@@ -29,23 +29,6 @@ def test_exchange_rate_end_after_start():
         ExchangeRate('USD', start, end)
 
 
-def test_exchange_rate_only_weekend(requests_mock):
-    requests_mock.get(rm.ANY,
-                      json={
-                        "observations": [
-                            {
-                                "d": "2020-05-22",
-                                "FXUSDCAD": {
-                                    "v": "1.3"
-                                }
-                            }
-                        ]})
-
-    weekend = date(2020, 5, 24)
-    er = ExchangeRate('USD', weekend, weekend)
-    assert er.get_rate(weekend) == er.get_rate(date(2020, 5, 22))
-
-
 def test_exchange_rate_non_existent_currency(requests_mock):
     fakeCurrency = 'IMAGINARYMONEY'
     start_date = ExchangeRate.min_date
