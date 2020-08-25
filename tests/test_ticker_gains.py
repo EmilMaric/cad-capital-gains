@@ -4,9 +4,8 @@ import pytest
 
 def test_ticker_gains_negative_balance(acb_transactions):
     with pytest.raises(ValueError):
-        transactions = acb_transactions
-        tg = TickerGains(transactions[2].ticker)
-        tg.add_transaction(transactions[2], 1.2622)
+        tg = TickerGains(acb_transactions[2].ticker)
+        tg.add_transaction(acb_transactions[2], 1.2622)
 
 
 def test_ticker_gains_ok(acb_transactions):
