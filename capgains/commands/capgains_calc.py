@@ -44,6 +44,7 @@ def _filter_transaction(transaction, max_year, ticker):
 
 
 def _filter_calculated_transaction(transaction, year):
+    # Only display 'SELL' transactions of the current year
     if transaction.date.year != year:
         return False
     if transaction.action != 'SELL':
@@ -52,9 +53,10 @@ def _filter_calculated_transaction(transaction, year):
 
 
 def get_calculated_dicts(transactions, year, ticker):
-    # Prune transactions that don't match the filter options
-    # 1) We need all the transactions prior to the max_year in order to calculate ACB
-    # 2) We only care about the selected ticker
+    """Prune transactions that don't match the filter options:
+    1) We need all the transactions prior to the max_year in order
+       to calculate ACB
+    2) We only care about the selected ticker"""
     filtered_transactions = list(filter(
         lambda t: _filter_transaction(t, max_year=year, ticker=ticker),
         transactions))
