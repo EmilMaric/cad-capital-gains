@@ -44,9 +44,10 @@ def _filter_transaction(transaction, max_year, ticker):
 
 
 def _filter_calculated_transaction(transaction, year):
-    # Only display 'SELL' transactions of the current year
+    # Only display transactions in the current year
     if transaction.date.year != year:
         return False
+    # 'SELL' transactions are the only ones that contribute to gain/loss
     if transaction.action != 'SELL':
         return False
     return True
