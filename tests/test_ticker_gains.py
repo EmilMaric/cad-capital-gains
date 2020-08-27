@@ -3,7 +3,7 @@ import pytest
 
 
 def test_ticker_gains_negative_balance(acb_transactions):
-    """ If the first transaction added is a sell, it is illegal since
+    """If the first transaction added is a sell, it is illegal since
     this causes a negative balance, which is impossible"""
     sell_transaction = acb_transactions[2]
     tg = TickerGains(sell_transaction.ticker)
