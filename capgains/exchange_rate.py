@@ -37,17 +37,16 @@ class ExchangeRate:
             forex_str = "FX{}{}".format(self._currency_from, self.currency_to)
             url = "{}/{}/json".format(self.valet_obs_url, forex_str)
             response = requests.get(url=url, params=params)
-            try:
-                rates = response.json()[self.observations]
-            except KeyError:
-                raise ClickException(
-                    "No observations were found using currency {}"
-                    .format(self._currency_from))
+            rates = response.json()[self.observations]
             self._rates = dict()
             for day_rate in rates:
                 date = day_rate[self.date]
                 rate = float(day_rate[forex_str][self.value])
                 self._rates[date] = rate
+        except KeyError:
+            raise ClickException(
+                "No observations were found using currency {}"
+                .format(self._currency_from))
         except requests.ConnectionError as e:
             raise ClickException(
                 "Error with internet connection to URL {} : {}".format(url, e))
