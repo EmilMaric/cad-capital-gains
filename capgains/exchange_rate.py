@@ -76,7 +76,7 @@ class ExchangeRate:
     def end_date(self):
         return self._end_date
 
-    def _get_last_rate_in_range(self, date):
+    def _get_closest_rate_for_day(self, date):
         """Gets the exchange rate for the closest
         preceeding date with a rate"""
         while date > self.min_date:
@@ -91,7 +91,7 @@ class ExchangeRate:
         (1) for the day if an exchange rate exists for that day
         (2) for the closest preceeding day if an exchange rate does
             not exist for that day"""
-        rate = self._get_last_rate_in_range(date)
+        rate = self._get_closest_rate_for_day(date)
         if not rate:
             raise ClickException(
                 "Unable to find exchange rate on {}".format(date))
