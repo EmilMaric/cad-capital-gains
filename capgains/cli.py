@@ -1,8 +1,8 @@
 import click
 
-from .commands.capgains_show import capgains_show
-from .commands.capgains_calc import capgains_calc
-from .transactions_reader import TransactionsReader
+from capgains.commands.capgains_show import capgains_show
+from capgains.commands.capgains_calc import capgains_calc
+from capgains.transactions_reader import TransactionsReader
 
 
 @click.group()
