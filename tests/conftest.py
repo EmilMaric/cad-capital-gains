@@ -9,7 +9,7 @@ def testfiles_dir(tmpdir_factory):
     return tmpdir_factory.mktemp("testfiles")
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='function')
 def transactions():
     trans = [
         Transaction(
@@ -32,6 +32,14 @@ def transactions():
         ),
     ]
     return trans
+
+
+@pytest.fixture(scope='function')
+def transactions_as_list(transactions):
+    as_list = []
+    for transaction in transactions:
+        as_list.append(transaction.to_list())
+    return as_list
 
 
 @pytest.fixture(scope='module')

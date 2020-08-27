@@ -115,3 +115,6 @@ class Transaction:
             d['acb_delta'] = self.acb_delta
             d['acb'] = self.acb
         return d
+
+    def to_list(self, calculated_values=False):
+        return list(self.to_dict(calculated_values).values())

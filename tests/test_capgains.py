@@ -2,7 +2,6 @@ from capgains import __version__
 from click.testing import CliRunner
 from capgains.cli import capgains
 from tests.helpers import create_csv_file
-from datetime import date
 
 
 def test_version():
@@ -23,24 +22,11 @@ Error: File not found: {}
 """.format(filepath)
 
 
-def test_show_no_ticker_arg(testfiles_dir):
+def test_show_no_ticker_arg(testfiles_dir, transactions_as_list):
     """Testing the capgains show command providing no filtering argument"""
     filepath = create_csv_file(testfiles_dir,
                                "showtickertest.csv",
-                               [[date(2018, 2, 15),
-                                 'ESPP PURCHASE',
-                                 'ANET',
-                                 'BUY',
-                                 21,
-                                 307.96,
-                                 20.99],
-                                [date(2018, 2, 20),
-                                 'RSU VEST',
-                                 'GOOGL',
-                                 'BUY',
-                                 42,
-                                 249.55,
-                                 0.00]],
+                               transactions_as_list,
                                True)
 
     runner = CliRunner()
@@ -55,24 +41,11 @@ date        transaction_type    ticker    action      qty    price    commission
 """  # noqa: E501
 
 
-def test_show_ticker_arg(testfiles_dir):
+def test_show_ticker_arg(testfiles_dir, transactions_as_list):
     """Testing the capgains show command with a ticker filter"""
     filepath = create_csv_file(testfiles_dir,
                                "showtickertest.csv",
-                               [[date(2018, 2, 15),
-                                 'ESPP PURCHASE',
-                                 'ANET',
-                                 'BUY',
-                                 21,
-                                 307.96,
-                                 20.99],
-                                [date(2018, 2, 20),
-                                 'RSU VEST',
-                                 'GOOGL',
-                                 'BUY',
-                                 42,
-                                 249.55,
-                                 0.00]],
+                               transactions_as_list,
                                True)
 
     runner = CliRunner()
