@@ -15,8 +15,8 @@ class TickerGains:
         """Adds a transaction and updates the calculated values."""
         new_share_balance = self._share_balance
         new_total_acb = self._total_acb
-        # to prevent divide by 0 error
         if self._share_balance == 0:
+            # to prevent divide by 0 error
             old_acb_per_share = 0
         else:
             old_acb_per_share = self._total_acb / self._share_balance
