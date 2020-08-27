@@ -19,15 +19,15 @@ class TickerGains:
         if self._share_balance == 0:
             old_acb_per_share = 0
         else:
-            old_acb_per_share = self._total_acb/self._share_balance
+            old_acb_per_share = self._total_acb / self._share_balance
         if transaction.action == 'SELL':
             new_share_balance -= transaction.qty
-            proceeds = (transaction.qty*transaction.price - transaction.commission) * exchange_rate  # noqa: E501
-            capital_gain = proceeds - old_acb_per_share*transaction.qty
-            acb_delta = -(old_acb_per_share*transaction.qty)
+            proceeds = (transaction.qty * transaction.price - transaction.commission) * exchange_rate  # noqa: E501
+            capital_gain = proceeds - old_acb_per_share * transaction.qty
+            acb_delta = -(old_acb_per_share * transaction.qty)
         else:
             new_share_balance += transaction.qty
-            proceeds = -(transaction.qty*transaction.price - transaction.commission) * exchange_rate  # noqa: E501
+            proceeds = -(transaction.qty * transaction.price - transaction.commission) * exchange_rate  # noqa: E501
             capital_gain = 0.0
             acb_delta = -proceeds
         new_total_acb += acb_delta
