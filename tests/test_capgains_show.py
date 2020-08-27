@@ -10,6 +10,7 @@ date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
 2018-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
 2018-02-20  RSU VEST            GOOGL     BUY          42   249.55          0.00
+2018-02-20  RSU VEST            ANET      SELL         20   249.00         20.31
 """  # noqa: E501
 
 
@@ -30,6 +31,7 @@ def test_ticker(transactions, capfd):
 date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
 2018-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
+2018-02-20  RSU VEST            ANET      SELL         20   249.00         20.31
 """  # noqa: E501
 
 
@@ -68,4 +70,5 @@ date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
 2018-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
 2018-02-20  RSU VEST            GOOGL     BUY          42   249.55          0.00
+2018-02-20  RSU VEST            ANET      SELL         20   249.00         20.31
 """  # noqa: E501
