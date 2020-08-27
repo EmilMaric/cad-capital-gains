@@ -31,22 +31,12 @@ class ExchangeRate:
 
         # Query for all the exchange rates in the range specified, and
         # populates a dictionary that maps dates to exchange rates.
+        params = {"start_date": start_date.isoformat(),
+                  "end_date": end_date.isoformat()}
+        forex_str = "FX{}{}".format(self._currency_from, self.currency_to)
+        url = "{}/{}/json".format(self.valet_obs_url, forex_str)
         try:
-            params = {"start_date": start_date.isoformat(),
-                      "end_date": end_date.isoformat()}
-            forex_str = "FX{}{}".format(self._currency_from, self.currency_to)
-            url = "{}/{}/json".format(self.valet_obs_url, forex_str)
             response = requests.get(url=url, params=params)
-            rates = response.json()[self.observations]
-            self._rates = dict()
-            for day_rate in rates:
-                date = day_rate[self.date]
-                rate = float(day_rate[forex_str][self.value])
-                self._rates[date] = rate
-        except KeyError:
-            raise ClickException(
-                "No observations were found using currency {}"
-                .format(self._currency_from))
         except requests.ConnectionError as e:
             raise ClickException(
                 "Error with internet connection to URL {} : {}".format(url, e))
@@ -62,6 +52,17 @@ class ExchangeRate:
         except requests.exceptions.RequestException as e:
             raise ClickException(
                 "Catastrophic error with URL {} : {}".format(url, e))
+        try:
+            rates = response.json()[self.observations]
+        except KeyError:
+            raise ClickException(
+                "No observations were found using currency {}"
+                .format(self._currency_from))
+        self._rates = dict()
+        for day_rate in rates:
+            date = day_rate[self.date]
+            rate = float(day_rate[forex_str][self.value])
+            self._rates[date] = rate
 
     @property
     def currency_from(self):
