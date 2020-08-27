@@ -39,6 +39,15 @@ def transactions():
             249.00,
             20.31,
         ),
+        Transaction(
+            date(2019, 2, 15),
+            'ESPP PURCHASE',
+            'ANET',
+            'BUY',
+            21,
+            307.96,
+            20.99,
+        )
     ]
     return trans
 
