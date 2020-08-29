@@ -1,7 +1,8 @@
 import click
 
-from .commands.capgains_show import capgains_show
-from .transactions_reader import TransactionsReader
+from capgains.commands.capgains_show import capgains_show
+from capgains.commands.capgains_calc import capgains_calc
+from capgains.transactions_reader import TransactionsReader
 
 
 @click.group()
@@ -18,3 +19,16 @@ def capgains():
 def show(transactions_csv, tickers):
     transactions = TransactionsReader.get_transactions(transactions_csv)
     capgains_show(transactions, tickers)
+
+
+@capgains.command(help=("Calculates capital gains from the transactions "
+                        "CSV-file and displays output in a tabular format. "
+                        "Filters can be applied to select which stocks to "
+                        "calculate the capital gains on."))
+@click.argument('transactions-csv')
+@click.argument('year', type=click.INT)
+@click.option('-t', '--tickers', metavar='TICKERS',
+              multiple=True, help="Stocks tickers to filter for")
+def calc(transactions_csv, year, tickers):
+    transactions = TransactionsReader.get_transactions(transactions_csv)
+    capgains_calc(transactions, year, tickers=tickers)
