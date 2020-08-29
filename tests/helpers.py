@@ -30,5 +30,5 @@ def create_csv_file(directory, filename, data=None, is_readable=True):
 def transactions_to_list(transactions):
     transactions_list = []
     for transaction in transactions:
-        transactions_list.append( list(transaction.to_dict().values()) )
+        transactions_list.append(list(transaction.to_dict().values()))
     return transactions_list

@@ -30,12 +30,12 @@ def test_transactions_reader_default(testfiles_dir, transactions):
 def test_transactions_reader_columns_error(testfiles_dir):
     """Testing TransactionsReader for a csv file with too many columns"""
     transaction = Transaction(date(2018, 2, 15),
-                                  'ESPP PURCHASE',
-                                  'ANET',
-                                  'BUY',
-                                  21,
-                                  307.96,
-                                  20.99)
+                              'ESPP PURCHASE',
+                              'ANET',
+                              'BUY',
+                              21,
+                              307.96,
+                              20.99)
     transactions_list = transactions_to_list([transaction])
     # Add an extra column to the transaction
     transactions_list[0].append('EXTRA_COLUMN_VALUE')

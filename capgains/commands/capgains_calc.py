@@ -79,7 +79,6 @@ def get_calculated_dicts(transactions, year, ticker):
 def capgains_calc(transactions, year, tickers=None):
     """Take a list of transactions and print the calculated capital
     gains in a separate tabular format for each specified ticker."""
-    calculation_made = False
     if not transactions:
         click.echo("No transactions available")
         return
@@ -95,7 +94,6 @@ def capgains_calc(transactions, year, tickers=None):
         if not calculated_dicts:
             click.echo("No capital gains\n")
             continue
-        calculation_made = True
         headers = calculated_dicts[0].keys()
         rows = [t.values() for t in calculated_dicts]
         output = tabulate.tabulate(rows, headers=headers,
