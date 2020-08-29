@@ -1,5 +1,5 @@
 import requests
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from click import ClickException
 
 
@@ -60,7 +60,8 @@ class ExchangeRate:
                 .format(self._currency_from))
         self._rates = dict()
         for day_rate in rates:
-            date = day_rate[self.date]
+            date_str = day_rate[self.date]
+            date = datetime.strptime(date_str, '%Y-%m-%d').date()
             rate = float(day_rate[forex_str][self.value])
             self._rates[date] = rate
 
@@ -79,12 +80,13 @@ class ExchangeRate:
     def _get_closest_rate_for_day(self, date):
         """Gets the exchange rate for the closest
         preceeding date with a rate"""
-        while date > self.min_date:
-            date_str = date.isoformat()
-            if date_str in self._rates:
-                return self._rates[date_str]
-            date = date - timedelta(days=1)
-        return None
+        if date <= self.min_date:
+            return None
+        if date in self._rates:
+            return self._rates[date]
+        dates_preceeding = [d for d in self._rates if d < date]
+        closest_date = min(dates_preceeding, key=lambda d: abs(d-date))
+        return self._rates[closest_date]
 
     def get_rate(self, date):
         """Gets the exchange rate either:

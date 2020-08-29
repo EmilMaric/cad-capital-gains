@@ -8,10 +8,10 @@ def test_no_filter(transactions, capfd):
     assert out == """\
 date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
-2018-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
-2018-02-20  RSU VEST            GOOGL     BUY          42   249.55          0.00
-2018-02-20  RSU VEST            ANET      SELL         20   249.00         20.31
-2019-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
+2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00
+2018-02-20  RSU VEST            GOOGL     BUY          30    20.00         10.00
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00
+2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00
 """  # noqa: E501
 
 
@@ -31,9 +31,9 @@ def test_ticker(transactions, capfd):
     assert out == """\
 date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
-2018-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
-2018-02-20  RSU VEST            ANET      SELL         20   249.00         20.31
-2019-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
+2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00
+2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00
 """  # noqa: E501
 
 
@@ -57,7 +57,7 @@ def test_known_ticker_and_unknown_ticker(transactions, capfd):
     assert out == """\
 date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
-2018-02-20  RSU VEST            GOOGL     BUY          42   249.55          0.00
+2018-02-20  RSU VEST            GOOGL     BUY          30    20.00         10.00
 """  # noqa: E501
 
 
@@ -70,8 +70,8 @@ def test_multiple_tickers(transactions, capfd):
     assert out == """\
 date        transaction_type    ticker    action      qty    price    commission
 ----------  ------------------  --------  --------  -----  -------  ------------
-2018-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
-2018-02-20  RSU VEST            GOOGL     BUY          42   249.55          0.00
-2018-02-20  RSU VEST            ANET      SELL         20   249.00         20.31
-2019-02-15  ESPP PURCHASE       ANET      BUY          21   307.96         20.99
+2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00
+2018-02-20  RSU VEST            GOOGL     BUY          30    20.00         10.00
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00
+2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00
 """  # noqa: E501

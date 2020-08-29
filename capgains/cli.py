@@ -26,9 +26,9 @@ def show(transactions_csv, tickers):
                         "Filters can be applied to select which stocks to "
                         "calculate the capital gains on."))
 @click.argument('transactions-csv')
-@click.argument('year')
+@click.argument('year', type=click.INT)
 @click.option('-t', '--tickers', metavar='TICKERS',
               multiple=True, help="Stocks tickers to filter for")
 def calc(transactions_csv, year, tickers):
     transactions = TransactionsReader.get_transactions(transactions_csv)
-    capgains_calc(transactions, tickers, year)
+    capgains_calc(transactions, year, tickers=tickers)

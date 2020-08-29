@@ -27,7 +27,7 @@ class TickerGains:
             acb_delta = -(old_acb_per_share * transaction.qty)
         else:
             new_share_balance += transaction.qty
-            proceeds = -(transaction.qty * transaction.price - transaction.commission) * exchange_rate  # noqa: E501
+            proceeds = -(transaction.qty * transaction.price + transaction.commission) * exchange_rate  # noqa: E501
             capital_gain = 0.0
             acb_delta = -proceeds
         new_total_acb += acb_delta
