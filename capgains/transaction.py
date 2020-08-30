@@ -28,6 +28,7 @@ class Transaction:
         self._capital_gain = None
         self._acb_delta = None
         self._acb = None
+        self._superficial_loss = None
 
     @property
     def date(self):
@@ -98,6 +99,14 @@ class Transaction:
     @acb.setter
     def acb(self, acb):
         self._acb = acb
+
+    @property
+    def superficial_loss(self):
+        return self._superficial_loss
+
+    @superficial_loss.setter
+    def superficial_loss(self, superficial_loss):
+        self._superficial_loss = superficial_loss
 
     def to_dict(self, calculated_values=False):
         d = OrderedDict()

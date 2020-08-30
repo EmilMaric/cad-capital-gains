@@ -1,4 +1,5 @@
 from click import ClickException
+from datetime import timedelta
 
 
 class TickerGains:
@@ -16,30 +17,33 @@ class TickerGains:
         for transaction in transactions:
             rate = exchange_rate.get_rate(transaction.date)
             self._add_transaction(transaction, rate)
-            if (self._is_superficial_loss(transaction, transactions)):
-                print("It is a superficial loss")
+            transaction.superficial_loss = \
+                self._is_superficial_loss(transaction, transactions)
 
-
-    def _superficial_window_filter(transaction, min_date, max_date):
-        return transaction.action == 'BUY' and \
-               transaction.date >= min_date and \
-               transaction.date <= max_date
-
+    def _superficial_window_filter(self, transaction, min_date, max_date):
+        """Filter out BUY transactions that fall within
+        the 61 day superficial loss window"""
+        return transaction.date >= min_date and transaction.date <= max_date
 
     def _is_superficial_loss(self, transaction, transactions):
         """Figures out if the transaction is a superficial loss"""
         if (transaction.capital_gain >= 0):
             return False
-
-        # Filter out BUY transactions that fall within the 61 day superficial loss window
         min_date = transaction.date - timedelta(days=30)
         max_date = transaction.date + timedelta(days=30)
         filtered_transactions = list(filter(
-        lambda t: self._superficial_window_filter(t, min_date=min_date, max_date=max_date),
-        transactions))
-
-        return len(filtered_transactions) > 0
-
+            lambda t: self._superficial_window_filter(t, min_date, max_date),
+            transactions))
+        if (not any(t.action == 'BUY' for t in filtered_transactions)):
+            return False
+        transaction_idx = filtered_transactions.index(transaction)
+        balance = transaction._share_balance
+        for window_transaction in filtered_transactions[transaction_idx+1:]:
+            if window_transaction.action == 'SELL':
+                balance -= window_transaction.qty
+            else:
+                balance += window_transaction.qty
+        return balance > 0
 
     def _add_transaction(self, transaction, exchange_rate):
         """Adds a transaction and updates the calculated values."""

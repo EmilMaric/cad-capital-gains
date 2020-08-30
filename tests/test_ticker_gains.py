@@ -1,10 +1,46 @@
-from capgains.ticker_gains import TickerGains
-from capgains.exchange_rate import ExchangeRate
 from click import ClickException
 import pytest
+from datetime import date
+
+from capgains.ticker_gains import TickerGains
+from capgains.exchange_rate import ExchangeRate
+from capgains.transaction import Transaction
 
 
-def test_ticker_gains_negative_balance(transactions):
+@pytest.fixture(scope='function')
+def superficial_loss_transactions():
+    trans = [
+        Transaction(
+            date(2018, 2, 15),
+            'ESPP PURCHASE',
+            'ANET',
+            'BUY',
+            100,
+            100.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 2, 20),
+            'RSU VEST',
+            'ANET',
+            'SELL',
+            99,
+            50.00,
+            10.00,
+        ),
+    ]
+    return trans
+
+
+def test_superficial_loss(superficial_loss_transactions, exchange_rates_mock):
+    tg = TickerGains(superficial_loss_transactions[0].ticker)
+    er = ExchangeRate('USD', superficial_loss_transactions[0].date,
+                      superficial_loss_transactions[1].date)
+    tg.add_transactions(superficial_loss_transactions, er)
+    assert superficial_loss_transactions[1].superficial_loss
+
+
+def test_ticker_gains_negative_balance(transactions, exchange_rates_mock):
     """If the first transaction added is a sell, it is illegal since
     this causes a negative balance, which is impossible"""
     sell_transaction = transactions[2]
@@ -14,7 +50,7 @@ def test_ticker_gains_negative_balance(transactions):
         tg.add_transactions([sell_transaction], er)
 
 
-def test_ticker_gains_ok(transactions):
+def test_ticker_gains_ok(transactions, exchange_rates_mock):
     tg = TickerGains(transactions[0].ticker)
     er = ExchangeRate('USD', transactions[0].date, transactions[3].date)
 
@@ -24,7 +60,7 @@ def test_ticker_gains_ok(transactions):
     transactions_to_test = [transactions[0],
                             transactions[2],
                             transactions[3]]
-    
+
     tg.add_transactions(transactions_to_test, er)
     assert transactions[0].share_balance == 100
     assert transactions[0].proceeds == -10020.00
