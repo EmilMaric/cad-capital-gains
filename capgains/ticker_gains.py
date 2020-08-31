@@ -19,6 +19,10 @@ class TickerGains:
             self._add_transaction(transaction, rate)
             transaction.superficial_loss = \
                 self._is_superficial_loss(transaction, transactions)
+            if transaction.superficial_loss:
+                transaction.acb -= transaction.capital_gain
+                transaction.acb_delta -= transaction.capital_gain
+                transaction.capital_gain = 0
 
     def _superficial_window_filter(self, transaction, min_date, max_date):
         """Filter out BUY transactions that fall within
@@ -27,6 +31,7 @@ class TickerGains:
 
     def _is_superficial_loss(self, transaction, transactions):
         """Figures out if the transaction is a superficial loss"""
+        # Has to be a capital loss
         if (transaction.capital_gain >= 0):
             return False
         min_date = transaction.date - timedelta(days=30)
@@ -34,8 +39,10 @@ class TickerGains:
         filtered_transactions = list(filter(
             lambda t: self._superficial_window_filter(t, min_date, max_date),
             transactions))
+        # Has to have a purchase either 30 days before or 30 days after
         if (not any(t.action == 'BUY' for t in filtered_transactions)):
             return False
+        # Has to have a positive share balance after 30 days
         transaction_idx = filtered_transactions.index(transaction)
         balance = transaction._share_balance
         for window_transaction in filtered_transactions[transaction_idx+1:]:

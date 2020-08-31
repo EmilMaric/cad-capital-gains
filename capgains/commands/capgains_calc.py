@@ -54,6 +54,9 @@ def _filter_calculated_transaction(transaction, year):
     # 'SELL' transactions are the only ones that contribute to gain/loss
     if transaction.action != 'SELL':
         return False
+    # Only non superficial loss transactions
+    if transaction.superficial_loss:
+        return False
     return True
 
 
