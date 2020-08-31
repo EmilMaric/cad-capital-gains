@@ -7,11 +7,12 @@ from capgains.exchange_rate import ExchangeRate
 from capgains.transaction import Transaction
 
 
-@pytest.fixture(scope='function')
-def superficial_loss_transactions():
-    trans = [
+def test_superficial_loss_no_purchase_after_loss(exchange_rates_mock):
+    """Testing if transaction is marked as a superficial loss even if
+    there are no purchases made after the loss"""
+    transactions = [
         Transaction(
-            date(2018, 2, 15),
+            date(2018, 1, 1),
             'ESPP PURCHASE',
             'ANET',
             'BUY',
@@ -20,7 +21,38 @@ def superficial_loss_transactions():
             10.00,
         ),
         Transaction(
-            date(2018, 2, 20),
+            date(2018, 1, 2),
+            'RSU VEST',
+            'ANET',
+            'SELL',
+            99,
+            50.00,
+            10.00,
+        )
+    ]
+    tg = TickerGains(transactions[0].ticker)
+    er = ExchangeRate('USD', transactions[0].date,
+                      transactions[1].date)
+    tg.add_transactions(transactions, er)
+    assert transactions[1].superficial_loss
+    assert transactions[1].capital_gain == 0
+
+
+def test_superficial_loss_purchase_after_loss(exchange_rates_mock):
+    """Testing if transaction is marked as a superficial loss even if
+    there are is a purchase made after the loss"""
+    transactions = [
+        Transaction(
+            date(2018, 1, 1),
+            'ESPP PURCHASE',
+            'ANET',
+            'BUY',
+            100,
+            100.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 1, 2),
             'RSU VEST',
             'ANET',
             'SELL',
@@ -28,16 +60,142 @@ def superficial_loss_transactions():
             50.00,
             10.00,
         ),
+        Transaction(
+            date(2018, 1, 3),
+            'RSU VEST',
+            'ANET',
+            'BUY',
+            1,
+            100.00,
+            10.00,
+        )
     ]
-    return trans
+    tg = TickerGains(transactions[0].ticker)
+    er = ExchangeRate('USD', transactions[0].date,
+                      transactions[1].date)
+    tg.add_transactions(transactions, er)
+    assert transactions[1].superficial_loss
+    assert transactions[1].capital_gain == 0
 
 
-def test_superficial_loss(superficial_loss_transactions, exchange_rates_mock):
-    tg = TickerGains(superficial_loss_transactions[0].ticker)
-    er = ExchangeRate('USD', superficial_loss_transactions[0].date,
-                      superficial_loss_transactions[1].date)
-    tg.add_transactions(superficial_loss_transactions, er)
-    assert superficial_loss_transactions[1].superficial_loss
+def test_loss_no_balance_after_window(exchange_rates_mock):
+    """Testing if transaction is not marked as a superficial loss if
+    there are is no share balance 30 days after the loss"""
+    transactions = [
+        Transaction(
+            date(2018, 1, 1),
+            'ESPP PURCHASE',
+            'ANET',
+            'BUY',
+            100,
+            100.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 1, 2),
+            'RSU VEST',
+            'ANET',
+            'SELL',
+            99,
+            50.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 1, 3),
+            'RSU VEST',
+            'ANET',
+            'SELL',
+            1,
+            100.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 2, 10),
+            'RSU VEST',
+            'ANET',
+            'BUY',
+            1,
+            100.00,
+            10.00,
+        )
+    ]
+    tg = TickerGains(transactions[0].ticker)
+    er = ExchangeRate('USD', transactions[0].date,
+                      transactions[1].date)
+    tg.add_transactions(transactions, er)
+    assert not transactions[1].superficial_loss
+    assert transactions[1].capital_gain < 0
+
+
+def test_loss_no_purchase_in_window(exchange_rates_mock):
+    """Testing if transaction is not marked as a superficial loss if
+    there are are no purchases made in the 61 day window"""
+    transactions = [
+        Transaction(
+            date(2018, 1, 1),
+            'ESPP PURCHASE',
+            'ANET',
+            'BUY',
+            100,
+            100.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 8, 1),
+            'RSU VEST',
+            'ANET',
+            'SELL',
+            99,
+            50.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 12, 1),
+            'RSU VEST',
+            'ANET',
+            'BUY',
+            1,
+            50.00,
+            10.00,
+        )
+    ]
+    tg = TickerGains(transactions[0].ticker)
+    er = ExchangeRate('USD', transactions[0].date,
+                      transactions[1].date)
+    tg.add_transactions(transactions, er)
+    assert not transactions[1].superficial_loss
+    assert transactions[1].capital_gain < 0
+
+
+def test_gain_not_marked_as_superficial_loss(exchange_rates_mock):
+    """Testing if transaction is not marked as a superficial loss if
+    it does not result in a loss"""
+    transactions = [
+        Transaction(
+            date(2018, 1, 1),
+            'ESPP PURCHASE',
+            'ANET',
+            'BUY',
+            100,
+            1.00,
+            10.00,
+        ),
+        Transaction(
+            date(2018, 8, 1),
+            'RSU VEST',
+            'ANET',
+            'SELL',
+            100,
+            50.00,
+            10.00,
+        )
+    ]
+    tg = TickerGains(transactions[0].ticker)
+    er = ExchangeRate('USD', transactions[0].date,
+                      transactions[1].date)
+    tg.add_transactions(transactions, er)
+    assert not transactions[1].superficial_loss
+    assert transactions[1].capital_gain > 0
 
 
 def test_ticker_gains_negative_balance(transactions, exchange_rates_mock):
