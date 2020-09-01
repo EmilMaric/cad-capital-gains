@@ -40,7 +40,7 @@ def test_superficial_loss_no_purchase_after_loss(exchange_rates_mock):
 
 def test_superficial_loss_purchase_after_loss(exchange_rates_mock):
     """Testing if transaction is marked as a superficial loss even if
-    there are is a purchase made after the loss"""
+    there is a purchase made after the loss"""
     transactions = [
         Transaction(
             date(2018, 1, 1),
