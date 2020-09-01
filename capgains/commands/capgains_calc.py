@@ -54,6 +54,9 @@ def _filter_calculated_transaction(transaction, year):
     # 'SELL' transactions are the only ones that contribute to gain/loss
     if transaction.action != 'SELL':
         return False
+    # Only non superficial loss transactions
+    if transaction.superficial_loss:
+        return False
     return True
 
 
@@ -65,9 +68,7 @@ def get_calculated_dicts(transactions, year, ticker):
         return None
     er = ExchangeRate('USD', transactions[0].date, transactions[-1].date)
     tg = TickerGains(ticker)
-    for transaction in filtered_transactions:
-        rate = er.get_rate(transaction.date)
-        tg.add_transaction(transaction, rate)
+    tg.add_transactions(filtered_transactions, er)
     year_transactions = list(filter(
         lambda t: _filter_calculated_transaction(t, year),
         filtered_transactions))
