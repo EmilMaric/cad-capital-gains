@@ -11,6 +11,7 @@ colalign = (
     "right",  # qty
     "right",  # price
     "right",  # commission
+    "right",  # currency
 )
 
 floatfmt = (
@@ -21,6 +22,7 @@ floatfmt = (
     None,    # qty
     ",.2f",  # price
     ",.2f",  # commission
+    None,    # currency
 )
 
 

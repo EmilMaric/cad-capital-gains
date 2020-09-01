@@ -10,9 +10,9 @@ def test_no_ticker(transactions, capfd, exchange_rates_mock):
     out, _ = capfd.readouterr()
     assert out == """\
 ANET-2018
-date        transaction_type    ticker    action      qty    price    commission    share_balance    proceeds    capital_gain    acb_delta       acb
-----------  ------------------  --------  --------  -----  -------  ------------  ---------------  ----------  --------------  -----------  --------
-2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00               50   11,980.00        6,970.00    -5,010.00  5,010.00
+date        transaction_type    ticker    action      qty    price    commission    currency    share_balance    proceeds    capital_gain    acb_delta       acb
+----------  ------------------  --------  --------  -----  -------  ------------  ----------  ---------------  ----------  --------------  -----------  --------
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD               50   11,980.00        6,970.00    -5,010.00  5,010.00
 
 GOOGL-2018
 No capital gains
@@ -26,9 +26,9 @@ def test_tickers(transactions, capfd, exchange_rates_mock):
     out, _ = capfd.readouterr()
     assert out == """\
 ANET-2018
-date        transaction_type    ticker    action      qty    price    commission    share_balance    proceeds    capital_gain    acb_delta       acb
-----------  ------------------  --------  --------  -----  -------  ------------  ---------------  ----------  --------------  -----------  --------
-2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00               50   11,980.00        6,970.00    -5,010.00  5,010.00
+date        transaction_type    ticker    action      qty    price    commission    currency    share_balance    proceeds    capital_gain    acb_delta       acb
+----------  ------------------  --------  --------  -----  -------  ------------  ----------  ---------------  ----------  --------------  -----------  --------
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD               50   11,980.00        6,970.00    -5,010.00  5,010.00
 
 """  # noqa: E501
 
@@ -67,6 +67,7 @@ def test_superficial_loss_not_displayed(capfd, exchange_rates_mock):
             100,
             100.00,
             10.00,
+            'USD'
         ),
         Transaction(
             date(2018, 1, 2),
@@ -76,6 +77,7 @@ def test_superficial_loss_not_displayed(capfd, exchange_rates_mock):
             99,
             50.00,
             10.00,
+            'USD'
         ),
         Transaction(
             date(2018, 12, 1),
@@ -85,14 +87,15 @@ def test_superficial_loss_not_displayed(capfd, exchange_rates_mock):
             1,
             1000.00,
             10.00,
+            'USD'
         )
     ]
     CapGainsCalc.capgains_calc(transactions, 2018)
     out, _ = capfd.readouterr()
     assert out == """\
 ANET-2018
-date        transaction_type    ticker    action      qty     price    commission    share_balance    proceeds    capital_gain    acb_delta    acb
-----------  ------------------  --------  --------  -----  --------  ------------  ---------------  ----------  --------------  -----------  -----
-2018-12-01  RSU VEST            ANET      SELL          1  1,000.00         10.00                0    1,980.00        1,779.80      -200.20   0.00
+date        transaction_type    ticker    action      qty     price    commission    currency    share_balance    proceeds    capital_gain    acb_delta    acb
+----------  ------------------  --------  --------  -----  --------  ------------  ----------  ---------------  ----------  --------------  -----------  -----
+2018-12-01  RSU VEST            ANET      SELL          1  1,000.00         10.00         USD                0    1,980.00        1,779.80      -200.20   0.00
 
 """  # noqa: E501
