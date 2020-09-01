@@ -12,8 +12,9 @@ class ExchangeRate:
     value = 'v'
 
     def _init_cad_to_cad(self, start_date, end_date):
-        # The API doesn't support CAD -> CAD, so just set the rate to 1
-        num_days = (end_date - start_date).days
+        """The API doesn't support CAD -> CAD, so just set the rates to 1
+        for all days"""
+        num_days = (end_date - start_date).days + 1
         for date in \
                 (start_date + timedelta(days=n) for n in range(num_days)):
             self._rates[date] = 1
