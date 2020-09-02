@@ -16,10 +16,10 @@ def test_transactions_reader_default(testfiles_dir, transactions):
                                   307.96,
                                   20.99,
                                   'USD')
-    transactions_list = transactions_to_list([exp_transaction])
+    transactions = transactions_to_list([exp_transaction])
     filepath = create_csv_file(testfiles_dir,
                                "good.csv",
-                               transactions_list,
+                               transactions,
                                True)
 
     actual_transactions = TransactionsReader.get_transactions(filepath)
@@ -38,13 +38,13 @@ def test_transactions_reader_columns_error(testfiles_dir):
                               307.96,
                               20.99,
                               'USD')
-    transactions_list = transactions_to_list([transaction])
+    transactions = transactions_to_list([transaction])
     # Add an extra column to the transaction
-    transactions_list[0].append('EXTRA_COLUMN_VALUE')
+    transactions[0].append('EXTRA_COLUMN_VALUE')
     with pytest.raises(ClickException):
         filepath = create_csv_file(testfiles_dir,
                                    "too_many_cols.csv",
-                                   transactions_list,
+                                   transactions,
                                    True)
         TransactionsReader.get_transactions(filepath)
 
@@ -82,11 +82,87 @@ def test_transactions_read_wrong_dates_order(testfiles_dir):
                                      307.96,
                                      20.99,
                                      'USD')
-    transactions_list = transactions_to_list([transaction_after,
-                                             transaction_before])
+    transactions = transactions_to_list([transaction_after,
+                                         transaction_before])
     with pytest.raises(ClickException):
         filepath = create_csv_file(testfiles_dir,
                                    "outoforder.csv,",
-                                   transactions_list,
+                                   transactions,
+                                   True)
+        TransactionsReader.get_transactions(filepath)
+
+
+def test_transactions_date_wrong_format(testfiles_dir):
+    """Testing TransactionsReader with dates entered in wrong format"""
+    transaction = Transaction('January 1st 2020',
+                              'RSU VEST',
+                              'ANET',
+                              'BUY',
+                              100,
+                              50.00,
+                              0.0,
+                              'USD')
+    transactions = transactions_to_list([transaction])
+    with pytest.raises(ClickException):
+        filepath = create_csv_file(testfiles_dir,
+                                   "datewrongformat.csv,",
+                                   transactions,
+                                   True)
+        TransactionsReader.get_transactions(filepath)
+
+
+def test_transactions_qty_not_integer(testfiles_dir):
+    """Testing TransactionsReader with qty entered in wrong format"""
+    transaction = Transaction(date(2020, 2, 20),
+                              'RSU VEST',
+                              'ANET',
+                              'BUY',
+                              100.1,
+                              50.00,
+                              0.0,
+                              'USD')
+    transactions = transactions_to_list([transaction])
+    with pytest.raises(ClickException):
+        filepath = create_csv_file(testfiles_dir,
+                                   "qtynotinteger.csv,",
+                                   transactions,
+                                   True)
+        TransactionsReader.get_transactions(filepath)
+
+
+def test_transactions_price_not_float(testfiles_dir):
+    """Testing TransactionsReader with price entered in wrong format"""
+    transaction = Transaction(date(2020, 2, 20),
+                              'RSU VEST',
+                              'ANET',
+                              'BUY',
+                              100,
+                              "notafloat",
+                              0.0,
+                              'USD')
+    transactions = transactions_to_list([transaction])
+    with pytest.raises(ClickException):
+        filepath = create_csv_file(testfiles_dir,
+                                   "pricenotfloat.csv,",
+                                   transactions,
+                                   True)
+        TransactionsReader.get_transactions(filepath)
+
+
+def test_transactions_commission_not_float(testfiles_dir):
+    """Testing TransactionsReader with commission entered in wrong format"""
+    transaction = Transaction(date(2020, 2, 20),
+                              'RSU VEST',
+                              'ANET',
+                              'BUY',
+                              100,
+                              50.00,
+                              "notafloat",
+                              'USD')
+    transactions = transactions_to_list([transaction])
+    with pytest.raises(ClickException):
+        filepath = create_csv_file(testfiles_dir,
+                                   "commissionnotfloat.csv,",
+                                   transactions,
                                    True)
         TransactionsReader.get_transactions(filepath)
