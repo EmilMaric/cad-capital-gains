@@ -1,6 +1,7 @@
 from capgains import __version__
 from click.testing import CliRunner
 from capgains.cli import capgains
+
 from tests.helpers import create_csv_file, transactions_to_list
 
 

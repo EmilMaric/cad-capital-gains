@@ -11,4 +11,7 @@
 *.pyc
 
 # Code coverage file
-.coverage
+.coverage*
+
+# Mac
+.DS_Store*

@@ -1,5 +1,7 @@
 import click
 import tabulate
+from itertools import groupby
+
 from capgains.exchange_rate import ExchangeRate
 from capgains.ticker_gains import TickerGains
 
@@ -63,28 +65,18 @@ def _filter_calculated_transaction(transaction, year):
 
 
 def _get_map_of_currencies_to_exchange_rates(transactions):
-    currency_date_ranges = dict()
-    # First, map the currency to a range of dates it needs
-    for transaction in transactions:
-        currency = transaction.currency
-        date = transaction.date
-        if currency not in currency_date_ranges:
-            currency_date_ranges[currency] = (date, date)
-        elif date < currency_date_ranges[currency][0]:
-            # Set the minimum date
-            currency_date_ranges[currency] = \
-                (date, currency_date_ranges[currency][1])
-        elif date > currency_date_ranges[currency][1]:
-            # Set the maximum date
-            currency_date_ranges[currency] = \
-                (currency_date_ranges[currency][0], date)
+    """First, split the list of transactions into sublists where each sublist
+    will only contain transactions with the same currency"""
+    currency_groups = [list(g) for _, g in groupby(transactions,
+                                                   lambda t: t.currency)]
     currencies_to_exchange_rates = dict()
-    # Next, map the currency to an ExchangeRate object
-    for currency in currency_date_ranges.keys():
-        first_date = currency_date_ranges[currency][0]
-        last_date = currency_date_ranges[currency][1]
-        currencies_to_exchange_rates[currency] = \
-            ExchangeRate(currency, first_date, last_date)
+    # Create a separate ExchangeRate object for each currency
+    for currency_group in currency_groups:
+        currency = currency_group[0].currency
+        min_date = currency_group[0].date
+        max_date = currency_group[-1].date
+        currencies_to_exchange_rates[currency] = ExchangeRate(
+            currency, min_date, max_date)
     return currencies_to_exchange_rates
 
 

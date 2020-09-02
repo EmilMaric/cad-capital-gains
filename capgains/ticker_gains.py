@@ -8,10 +8,6 @@ class TickerGains:
         self._share_balance = 0
         self._total_acb = 0
 
-    @property
-    def ticker(self, ticker):
-        return self._ticker
-
     def add_transactions(self, transactions, exchange_rates):
         """Adds all transactions and updates the calculated values"""
         for transaction in transactions:
