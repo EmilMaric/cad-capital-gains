@@ -14,7 +14,8 @@ def test_transactions_reader_default(testfiles_dir, transactions):
                                   'BUY',
                                   21,
                                   307.96,
-                                  20.99)
+                                  20.99,
+                                  'USD')
     transactions_list = transactions_to_list([exp_transaction])
     filepath = create_csv_file(testfiles_dir,
                                "good.csv",
@@ -35,7 +36,8 @@ def test_transactions_reader_columns_error(testfiles_dir):
                               'BUY',
                               21,
                               307.96,
-                              20.99)
+                              20.99,
+                              'USD')
     transactions_list = transactions_to_list([transaction])
     # Add an extra column to the transaction
     transactions_list[0].append('EXTRA_COLUMN_VALUE')
@@ -70,14 +72,16 @@ def test_transactions_read_wrong_dates_order(testfiles_dir):
                                     'BUY',
                                     42,
                                     249.55,
-                                    0.0)
+                                    0.0,
+                                    'USD')
     transaction_before = Transaction(date(2018, 2, 15),
                                      'ESPP PURCHASE',
                                      'ANET',
                                      'BUY',
                                      21,
                                      307.96,
-                                     20.99)
+                                     20.99,
+                                     'USD')
     transactions_list = transactions_to_list([transaction_after,
                                              transaction_before])
     with pytest.raises(ClickException):

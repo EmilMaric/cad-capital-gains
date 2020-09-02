@@ -10,12 +10,13 @@ class Transaction:
     qty_idx = 4
     price_idx = 5
     commission_idx = 6
-    num_vals_show = 7
+    currency_idx = 7
+    num_vals_show = 8
     num_vals_calculated = 5
     num_vals_all = num_vals_show + num_vals_calculated
 
     def __init__(self, date, transaction_type, ticker, action, qty, price,
-                 commission):
+                 commission, currency):
         self._date = date
         self._transaction_type = transaction_type
         self._ticker = ticker
@@ -23,6 +24,7 @@ class Transaction:
         self._qty = qty
         self._price = price
         self._commission = commission
+        self._currency = currency
         self._share_balance = None
         self._proceeds = None
         self._capital_gain = None
@@ -57,6 +59,10 @@ class Transaction:
     @property
     def commission(self):
         return self._commission
+
+    @property
+    def currency(self):
+        return self._currency
 
     @property
     def share_balance(self):
@@ -117,6 +123,7 @@ class Transaction:
         d['qty'] = self.qty
         d['price'] = self.price
         d['commission'] = self.commission
+        d['currency'] = self.currency
         if calculated_values:
             d['share_balance'] = self.share_balance
             d['proceeds'] = self.proceeds

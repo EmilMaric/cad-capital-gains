@@ -12,6 +12,7 @@ def test_transactions_to_dict(transactions):
     assert trans_dict['qty'] == 100
     assert trans_dict['price'] == 50.00
     assert trans_dict['commission'] == 10.00
+    assert trans_dict['currency'] == 'USD'
 
     # check that no extra values were added
     assert len(trans_dict) == Transaction.num_vals_show
@@ -27,6 +28,7 @@ def test_transactions_to_dict_calculated_partially_populated(transactions):
     assert trans_dict['qty'] == 100
     assert trans_dict['price'] == 50.00
     assert trans_dict['commission'] == 10.00
+    assert trans_dict['currency'] == 'USD'
     assert trans_dict['share_balance'] is None
     assert trans_dict['proceeds'] is None
     assert trans_dict['capital_gain'] is None
@@ -53,6 +55,7 @@ def test_transactions_to_dict_calculated_fully_populated(transactions):
     assert trans_dict['qty'] == 100
     assert trans_dict['price'] == 50.00
     assert trans_dict['commission'] == 10.00
+    assert trans_dict['currency'] == 'USD'
     assert trans_dict['share_balance'] == 50
     assert trans_dict['proceeds'] == 5000.00
     assert trans_dict['capital_gain'] == 5010.00
