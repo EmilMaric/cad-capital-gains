@@ -10,6 +10,7 @@ class ExchangeRate:
     currency_to = 'CAD'
     date = 'd'
     value = 'v'
+    supported_currencies = ['CAD', 'USD']
 
     def _init_cad_to_cad(self, start_date, end_date):
         """The API doesn't support CAD -> CAD, so just set the rates to 1
@@ -65,6 +66,11 @@ class ExchangeRate:
         self._start_date = start_date
         self._end_date = end_date
         self._rates = dict()
+
+        if currency_from not in self.supported_currencies:
+            raise ClickException(
+                "Currency ({}) is not currently supported. The supported currencies are {}"  # noqa: E501
+                .format(currency_from, self.supported_currencies))
 
         if end_date < start_date:
             raise ClickException(
