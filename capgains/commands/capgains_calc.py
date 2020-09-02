@@ -71,9 +71,11 @@ def _get_map_of_currencies_to_exchange_rates(transactions):
         if currency not in currency_date_ranges:
             currency_date_ranges[currency] = (date, date)
         elif date < currency_date_ranges[currency][0]:
+            # Set the minimum date
             currency_date_ranges[currency] = \
                 (date, currency_date_ranges[currency][1])
         elif date > currency_date_ranges[currency][1]:
+            # Set the maximum date
             currency_date_ranges[currency] = \
                 (currency_date_ranges[currency][0], date)
     currencies_to_exchange_rates = dict()
