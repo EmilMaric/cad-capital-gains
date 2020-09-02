@@ -17,6 +17,7 @@ pytest = "^5.2"
 tox = "^3.15.0"
 requests-mock = "^1.8.0"
 flake8 = "^3.8.3"
+pytest-cov = "^2.10.1"
 
 [tool.poetry.scripts]
 capgains = "capgains.cli:capgains"
