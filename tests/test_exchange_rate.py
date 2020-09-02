@@ -3,6 +3,15 @@ from capgains.exchange_rate import ExchangeRate
 import pytest
 from click import ClickException
 import requests_mock as rm
+import requests
+
+
+def _request_error_throwing_test(requests_mock, expected_error):
+    with pytest.raises(ClickException):
+        requests_mock.get(rm.ANY,
+                          exc=expected_error)
+        day = date(2020, 5, 22)
+        ExchangeRate("USD", day, day)
 
 
 @pytest.fixture(scope='function')
@@ -88,3 +97,51 @@ def test_unsupported_currency_returns_error():
     with pytest.raises(ClickException):
         day = date(2020, 5, 22)
         ExchangeRate("BLAHBLAH", day, day)
+
+
+def test_no_observations_found_exception(requests_mock):
+    with pytest.raises(ClickException):
+        day = date(2020, 5, 22)
+        requests_mock.get(rm.ANY, json={})
+        ExchangeRate("USD", day, day)
+
+
+def test_connection_error_exception(requests_mock):
+    _request_error_throwing_test(requests_mock,
+                                 requests.ConnectionError)
+
+
+def test_http_error_exception(requests_mock):
+    _request_error_throwing_test(requests_mock,
+                                 requests.HTTPError)
+
+
+def test_timeout_exception(requests_mock):
+    _request_error_throwing_test(requests_mock,
+                                 requests.exceptions.Timeout)
+
+
+def test_too_many_redirects_exception(requests_mock):
+    _request_error_throwing_test(requests_mock,
+                                 requests.exceptions.TooManyRedirects)
+
+
+def test_request_exception(requests_mock):
+    _request_error_throwing_test(requests_mock,
+                                 requests.exceptions.RequestException)
+
+
+def test_exchange_rate_properties_set(USD_exchange_rates_mock):
+    start_date = date(2020, 5, 22)
+    end_date = date(2020, 5, 25)
+    currency = 'USD'
+    er = ExchangeRate(currency, start_date, end_date)
+    assert er.currency_from == currency
+    assert er.start_date == start_date
+    assert er.end_date == end_date
+
+
+def test_get_rate_before_min_date_exception(USD_exchange_rates_mock):
+    with pytest.raises(ClickException):
+        er = ExchangeRate('USD', date(2020, 5, 22), date(2020, 5, 25))
+        er.get_rate(ExchangeRate.min_date - timedelta(days=1))
