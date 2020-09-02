@@ -1,6 +1,7 @@
 from click import ClickException
 from datetime import date
 import pytest
+
 from capgains.transaction import Transaction
 from capgains.transactions_reader import TransactionsReader
 from tests.helpers import create_csv_file, transactions_to_list
@@ -41,19 +42,21 @@ def test_transactions_reader_columns_error(testfiles_dir):
     transactions = transactions_to_list([transaction])
     # Add an extra column to the transaction
     transactions[0].append('EXTRA_COLUMN_VALUE')
-    with pytest.raises(ClickException):
-        filepath = create_csv_file(testfiles_dir,
-                                   "too_many_cols.csv",
-                                   transactions,
-                                   True)
+    filepath = create_csv_file(testfiles_dir,
+                               "too_many_cols.csv",
+                               transactions,
+                               True)
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
+    assert excinfo.value.message == "Transaction entry 0: expected 8 columns, entry has 9"  # noqa: E501
 
 
 def test_transactions_reader_file_not_found_error(testfiles_dir):
     """Testing TransactionsReader with a non-existent file"""
-    with pytest.raises(ClickException):
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(create_csv_file(testfiles_dir,
                                                             "dne.csv"))
+    assert "File not found" in excinfo.value.message
 
 
 def test_transactions_reader_OS_error(testfiles_dir):
@@ -84,12 +87,13 @@ def test_transactions_read_wrong_dates_order(testfiles_dir):
                                      'USD')
     transactions = transactions_to_list([transaction_after,
                                          transaction_before])
-    with pytest.raises(ClickException):
-        filepath = create_csv_file(testfiles_dir,
-                                   "outoforder.csv,",
-                                   transactions,
-                                   True)
+    filepath = create_csv_file(testfiles_dir,
+                               "outoforder.csv,",
+                               transactions,
+                               True)
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
+    assert excinfo.value.message == "Transactions were not entered in chronological order"  # noqa: E501
 
 
 def test_transactions_date_wrong_format(testfiles_dir):
@@ -103,12 +107,13 @@ def test_transactions_date_wrong_format(testfiles_dir):
                               0.0,
                               'USD')
     transactions = transactions_to_list([transaction])
-    with pytest.raises(ClickException):
-        filepath = create_csv_file(testfiles_dir,
-                                   "datewrongformat.csv,",
-                                   transactions,
-                                   True)
+    filepath = create_csv_file(testfiles_dir,
+                               "datewrongformat.csv,",
+                               transactions,
+                               True)
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
+    assert excinfo.value.message == "The date (January 1st 2020) was not entered in the correct format (YYYY-MM-DD)"  # noqa: E501
 
 
 def test_transactions_qty_not_integer(testfiles_dir):
@@ -122,12 +127,13 @@ def test_transactions_qty_not_integer(testfiles_dir):
                               0.0,
                               'USD')
     transactions = transactions_to_list([transaction])
-    with pytest.raises(ClickException):
-        filepath = create_csv_file(testfiles_dir,
-                                   "qtynotinteger.csv,",
-                                   transactions,
-                                   True)
+    filepath = create_csv_file(testfiles_dir,
+                               "qtynotinteger.csv,",
+                               transactions,
+                               True)
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
+    assert excinfo.value.message == "The quanitity entered 100.1 is not an integer"  # noqa: E501
 
 
 def test_transactions_price_not_float(testfiles_dir):
@@ -141,12 +147,13 @@ def test_transactions_price_not_float(testfiles_dir):
                               0.0,
                               'USD')
     transactions = transactions_to_list([transaction])
-    with pytest.raises(ClickException):
-        filepath = create_csv_file(testfiles_dir,
-                                   "pricenotfloat.csv,",
-                                   transactions,
-                                   True)
+    filepath = create_csv_file(testfiles_dir,
+                               "pricenotfloat.csv,",
+                               transactions,
+                               True)
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
+    assert excinfo.value.message == "The price entered notafloat is not a float value"  # noqa: E501
 
 
 def test_transactions_commission_not_float(testfiles_dir):
@@ -160,9 +167,10 @@ def test_transactions_commission_not_float(testfiles_dir):
                               "notafloat",
                               'USD')
     transactions = transactions_to_list([transaction])
-    with pytest.raises(ClickException):
-        filepath = create_csv_file(testfiles_dir,
-                                   "commissionnotfloat.csv,",
-                                   transactions,
-                                   True)
+    filepath = create_csv_file(testfiles_dir,
+                               "commissionnotfloat.csv,",
+                               transactions,
+                               True)
+    with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
+    assert excinfo.value.message == "The commission entered notafloat is not a float value"  # noqa: E501

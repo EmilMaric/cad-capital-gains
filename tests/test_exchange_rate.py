@@ -1,9 +1,10 @@
 from datetime import date, timedelta
-from capgains.exchange_rate import ExchangeRate
 import pytest
 from click import ClickException
 import requests_mock as rm
 import requests
+
+from capgains.exchange_rate import ExchangeRate
 
 
 def _request_error_throwing_test(requests_mock, expected_error,
