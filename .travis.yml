@@ -5,6 +5,7 @@ python:
   - '3.7'
 before_install:
   - pip install poetry
+  - pip install codecov
 install:
   - poetry install -v
   - pip install tox-travis
@@ -12,3 +13,5 @@ install:
 script:
   - tox
   - flake8
+after_success:
+  - codecov
