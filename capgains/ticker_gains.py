@@ -9,7 +9,7 @@ class TickerGains:
         self._total_acb = 0
 
     @property
-    def ticker(self, ticker):
+    def ticker(self):
         return self._ticker
 
     def add_transactions(self, transactions, exchange_rates):

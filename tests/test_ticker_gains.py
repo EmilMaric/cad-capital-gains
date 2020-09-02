@@ -258,3 +258,9 @@ def test_ticker_gains_ok(transactions, exchange_rates_mock):
     assert transactions[3].capital_gain == 0.0
     assert transactions[3].acb_delta == 13020.00
     assert transactions[3].acb == 18030.00
+
+
+def test_ticker_gains_properties_set():
+    ticker = 'TEST'
+    tg = TickerGains(ticker)
+    assert tg.ticker == ticker
