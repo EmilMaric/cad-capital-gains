@@ -12,3 +12,6 @@
 
 # Code coverage file
 .coverage*
+
+# Mac
+.DS_Store*
