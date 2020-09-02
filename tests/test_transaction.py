@@ -1,4 +1,6 @@
 from datetime import date
+import pytest
+
 from capgains.transaction import Transaction
 
 
@@ -64,3 +66,8 @@ def test_transactions_to_dict_calculated_fully_populated(transactions):
 
     # check that no extra values were added
     assert len(trans_dict) == Transaction.num_vals_all
+
+
+def test_cannot_set_negative_share_balance(transactions):
+    with pytest.raises(ValueError):
+        transactions[0].share_balance = -1
