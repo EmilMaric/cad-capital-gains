@@ -56,7 +56,8 @@ def test_transactions_reader_file_not_found_error(testfiles_dir):
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(create_csv_file(testfiles_dir,
                                                             "dne.csv"))
-    assert "File not found" in excinfo.value.message
+    assert excinfo.value.message == "File not found: {}/{}".format(
+        testfiles_dir, "dne.csv")
 
 
 def test_transactions_reader_OS_error(testfiles_dir):
