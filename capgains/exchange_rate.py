@@ -86,18 +86,6 @@ class ExchangeRate:
             self._init_other_to_cad(currency_from, start_date,
                                     end_date)
 
-    @property
-    def currency_from(self):
-        return self._currency_from
-
-    @property
-    def start_date(self):
-        return self._start_date
-
-    @property
-    def end_date(self):
-        return self._end_date
-
     def _get_closest_rate_for_day(self, date):
         """Gets the exchange rate for the closest
         preceeding date with a rate"""

@@ -131,16 +131,6 @@ def test_request_exception(requests_mock):
                                  requests.exceptions.RequestException)
 
 
-def test_exchange_rate_properties_set(USD_exchange_rates_mock):
-    start_date = date(2020, 5, 22)
-    end_date = date(2020, 5, 25)
-    currency = 'USD'
-    er = ExchangeRate(currency, start_date, end_date)
-    assert er.currency_from == currency
-    assert er.start_date == start_date
-    assert er.end_date == end_date
-
-
 def test_get_rate_before_min_date_exception(USD_exchange_rates_mock):
     with pytest.raises(ClickException):
         er = ExchangeRate('USD', date(2020, 5, 22), date(2020, 5, 25))
