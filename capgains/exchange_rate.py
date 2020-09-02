@@ -10,20 +10,17 @@ class ExchangeRate:
     currency_to = 'CAD'
     date = 'd'
     value = 'v'
+    supported_currencies = ['CAD', 'USD']
 
-    def __init__(self, currency_from, start_date, end_date):
-        self._currency_from = currency_from
-        self._start_date = start_date
-        self._end_date = end_date
+    def _init_cad_to_cad(self, start_date, end_date):
+        """The API doesn't support CAD -> CAD, so just set the rates to 1
+        for all days"""
+        num_days = (end_date - start_date).days + 1
+        for date in \
+                (start_date + timedelta(days=n) for n in range(num_days)):
+            self._rates[date] = 1
 
-        if end_date < start_date:
-            raise ClickException(
-                "End date must be after start date")
-        if start_date < self.min_date:
-            raise ClickException(
-                "Start date is before minimum date {}"
-                .format(self.min_date.isoformat()))
-
+    def _init_other_to_cad(self, currency_from, start_date, end_date):
         # Always move the start date back 7 days in case the start
         # date, end date, and all days in between are all weekends/holidays
         # where no exchange rate can be found
@@ -58,12 +55,36 @@ class ExchangeRate:
             raise ClickException(
                 "No observations were found using currency {}"
                 .format(self._currency_from))
-        self._rates = dict()
         for day_rate in rates:
             date_str = day_rate[self.date]
             date = datetime.strptime(date_str, '%Y-%m-%d').date()
             rate = float(day_rate[forex_str][self.value])
             self._rates[date] = rate
+
+    def __init__(self, currency_from, start_date, end_date):
+        self._currency_from = currency_from
+        self._start_date = start_date
+        self._end_date = end_date
+        self._rates = dict()
+
+        if currency_from not in self.supported_currencies:
+            raise ClickException(
+                "Currency ({}) is not currently supported. The supported currencies are {}"  # noqa: E501
+                .format(currency_from, self.supported_currencies))
+
+        if end_date < start_date:
+            raise ClickException(
+                "End date must be after start date")
+        if start_date < self.min_date:
+            raise ClickException(
+                "Start date is before minimum date {}"
+                .format(self.min_date.isoformat()))
+
+        if currency_from == 'CAD':
+            self._init_cad_to_cad(start_date, end_date)
+        else:
+            self._init_other_to_cad(currency_from, start_date,
+                                    end_date)
 
     @property
     def currency_from(self):

@@ -12,10 +12,11 @@ class TickerGains:
     def ticker(self, ticker):
         return self._ticker
 
-    def add_transactions(self, transactions, exchange_rate):
+    def add_transactions(self, transactions, exchange_rates):
         """Adds all transactions and updates the calculated values"""
         for transaction in transactions:
-            rate = exchange_rate.get_rate(transaction.date)
+            rate = exchange_rates[transaction.currency] \
+                    .get_rate(transaction.date)
             self._add_transaction(transaction, rate)
             transaction.superficial_loss = \
                 self._is_superficial_loss(transaction, transactions)

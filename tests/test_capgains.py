@@ -34,12 +34,12 @@ def test_show_no_ticker_arg(testfiles_dir, transactions):
 
     assert result.exit_code == 0
     assert result.output == """\
-date        transaction_type    ticker    action      qty    price    commission
-----------  ------------------  --------  --------  -----  -------  ------------
-2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00
-2018-02-20  RSU VEST            GOOGL     BUY          30    20.00         10.00
-2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00
-2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00
+date        transaction_type    ticker    action      qty    price    commission    currency
+----------  ------------------  --------  --------  -----  -------  ------------  ----------
+2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00         USD
+2018-02-20  RSU VEST            GOOGL     BUY          30    20.00         10.00         USD
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD
+2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00         USD
 """  # noqa: E501
 
 
@@ -55,11 +55,11 @@ def test_show_ticker_arg(testfiles_dir, transactions):
 
     assert result.exit_code == 0
     assert result.output == """\
-date        transaction_type    ticker    action      qty    price    commission
-----------  ------------------  --------  --------  -----  -------  ------------
-2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00
-2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00
-2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00
+date        transaction_type    ticker    action      qty    price    commission    currency
+----------  ------------------  --------  --------  -----  -------  ------------  ----------
+2017-02-15  ESPP PURCHASE       ANET      BUY         100    50.00         10.00         USD
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD
+2019-02-15  ESPP PURCHASE       ANET      BUY          50   130.00         10.00         USD
 """  # noqa: E501
 
 
@@ -76,9 +76,9 @@ def test_calc_no_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
     assert result.exit_code == 0
     assert result.output == """\
 ANET-2018
-date        transaction_type    ticker    action      qty    price    commission    share_balance    proceeds    capital_gain    acb_delta       acb
-----------  ------------------  --------  --------  -----  -------  ------------  ---------------  ----------  --------------  -----------  --------
-2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00               50   11,980.00        6,970.00    -5,010.00  5,010.00
+date        transaction_type    ticker    action      qty    price    commission    currency    share_balance    proceeds    capital_gain    acb_delta       acb
+----------  ------------------  --------  --------  -----  -------  ------------  ----------  ---------------  ----------  --------------  -----------  --------
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD               50   11,980.00        6,970.00    -5,010.00  5,010.00
 
 GOOGL-2018
 No capital gains
@@ -99,9 +99,9 @@ def test_calc_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
     assert result.exit_code == 0
     assert result.output == """\
 ANET-2018
-date        transaction_type    ticker    action      qty    price    commission    share_balance    proceeds    capital_gain    acb_delta       acb
-----------  ------------------  --------  --------  -----  -------  ------------  ---------------  ----------  --------------  -----------  --------
-2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00               50   11,980.00        6,970.00    -5,010.00  5,010.00
+date        transaction_type    ticker    action      qty    price    commission    currency    share_balance    proceeds    capital_gain    acb_delta       acb
+----------  ------------------  --------  --------  -----  -------  ------------  ----------  ---------------  ----------  --------------  -----------  --------
+2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD               50   11,980.00        6,970.00    -5,010.00  5,010.00
 
 """  # noqa: E501
 

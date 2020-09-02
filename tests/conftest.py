@@ -21,6 +21,7 @@ def transactions():
             100,
             50.00,
             10.00,
+            'USD'
         ),
         Transaction(
             date(2018, 2, 20),
@@ -30,6 +31,7 @@ def transactions():
             30,
             20.00,
             10.00,
+            'USD'
         ),
         Transaction(
             date(2018, 2, 20),
@@ -39,6 +41,7 @@ def transactions():
             50,
             120.00,
             10.00,
+            'USD'
         ),
         Transaction(
             date(2019, 2, 15),
@@ -48,6 +51,7 @@ def transactions():
             50,
             130.00,
             10.00,
+            'USD'
         )
     ]
     return trans

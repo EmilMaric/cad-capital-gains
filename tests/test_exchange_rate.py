@@ -76,3 +76,15 @@ def test_exchange_rate_weekend_date(USD_exchange_rates_mock):
     er = ExchangeRate('USD', ExchangeRate.min_date, date.today())
     expected_rate = er.get_rate(friday)
     assert er.get_rate(sunday) == expected_rate
+
+
+def test_cad_to_cad_rate_is_1():
+    day = date(2020, 5, 22)
+    er = ExchangeRate('CAD', day, day)
+    assert er.get_rate(day) == 1
+
+
+def test_unsupported_currency_returns_error():
+    with pytest.raises(ClickException):
+        day = date(2020, 5, 22)
+        ExchangeRate("BLAHBLAH", day, day)
