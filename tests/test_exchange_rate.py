@@ -6,12 +6,13 @@ import requests_mock as rm
 import requests
 
 
-def _request_error_throwing_test(requests_mock, expected_error):
-    with pytest.raises(ClickException):
-        requests_mock.get(rm.ANY,
-                          exc=expected_error)
-        day = date(2020, 5, 22)
+def _request_error_throwing_test(requests_mock, expected_error,
+                                 expected_message):
+    requests_mock.get(rm.ANY, exc=expected_error)
+    day = date(2020, 5, 22)
+    with pytest.raises(ClickException) as excinfo:
         ExchangeRate("USD", day, day)
+    assert expected_message == excinfo.value.message
 
 
 @pytest.fixture(scope='function')
@@ -42,33 +43,18 @@ def USD_exchange_rates_mock(requests_mock):
 
 
 def test_exchange_rate_end_after_start():
-    with pytest.raises(ClickException):
-        end = date(2020, 5, 22)
-        start = end + timedelta(days=1)
+    end = date(2020, 5, 22)
+    start = end + timedelta(days=1)
+    with pytest.raises(ClickException) as excinfo:
         ExchangeRate('USD', start, end)
-
-
-def test_exchange_rate_non_existent_currency(requests_mock):
-    fakeCurrency = 'IMAGINARYMONEY'
-    start_date = ExchangeRate.min_date
-    end_date = ExchangeRate.min_date
-
-    requests_mock.get(rm.ANY, json={})
-
-    with pytest.raises(ClickException):
-        ExchangeRate(fakeCurrency, start_date, end_date)
+    assert excinfo.value.message == "End date must be after start date"
 
 
 def test_exchange_rate_init_before_min_date():
-    with pytest.raises(ClickException):
-        early = ExchangeRate.min_date - timedelta(days=1)
+    early = date(2017, 1, 2)
+    with pytest.raises(ClickException) as excinfo:
         ExchangeRate('USD', early, early)
-
-
-def test_exchange_rate_get_before_min_date():
-    with pytest.raises(ClickException):
-        early = ExchangeRate.min_date - timedelta(days=1)
-        ExchangeRate('USD', early, early)
+    assert excinfo.value.message == "Start date is before minimum date 2017-01-03"  # noqa: E501
 
 
 def test_exchange_rate_ok_date(USD_exchange_rates_mock):
@@ -94,44 +80,52 @@ def test_cad_to_cad_rate_is_1():
 
 
 def test_unsupported_currency_returns_error():
-    with pytest.raises(ClickException):
-        day = date(2020, 5, 22)
+    day = date(2020, 5, 22)
+    with pytest.raises(ClickException) as excinfo:
         ExchangeRate("BLAHBLAH", day, day)
+    assert excinfo.value.message == "Currency (BLAHBLAH) is not currently supported. The supported currencies are ['CAD', 'USD']"  # noqa: E501
 
 
 def test_no_observations_found_exception(requests_mock):
-    with pytest.raises(ClickException):
-        day = date(2020, 5, 22)
-        requests_mock.get(rm.ANY, json={})
+    day = date(2020, 5, 22)
+    requests_mock.get(rm.ANY, json={})
+    with pytest.raises(ClickException) as excinfo:
         ExchangeRate("USD", day, day)
+    assert excinfo.value.message == "No observations were found using currency USD"  # noqa: E501
 
 
 def test_connection_error_exception(requests_mock):
     _request_error_throwing_test(requests_mock,
-                                 requests.ConnectionError)
+                                 requests.ConnectionError,
+                                 "Error with internet connection to URL https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json : ")  # noqa: E501
 
 
 def test_http_error_exception(requests_mock):
     _request_error_throwing_test(requests_mock,
-                                 requests.HTTPError)
+                                 requests.HTTPError,
+                                 "HTTP request for URL https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json was unsuccessful : ")  # noqa: E501
 
 
 def test_timeout_exception(requests_mock):
     _request_error_throwing_test(requests_mock,
-                                 requests.exceptions.Timeout)
+                                 requests.exceptions.Timeout,
+                                 "Request timeout on URL https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json : ")  # noqa: E501
 
 
 def test_too_many_redirects_exception(requests_mock):
     _request_error_throwing_test(requests_mock,
-                                 requests.exceptions.TooManyRedirects)
+                                 requests.exceptions.TooManyRedirects,
+                                 "URL https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json was bad : ")  # noqa: E501
 
 
 def test_request_exception(requests_mock):
     _request_error_throwing_test(requests_mock,
-                                 requests.exceptions.RequestException)
+                                 requests.exceptions.RequestException,
+                                 "Catastrophic error with URL https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json : ")  # noqa: E501
 
 
 def test_get_rate_before_min_date_exception(USD_exchange_rates_mock):
-    with pytest.raises(ClickException):
-        er = ExchangeRate('USD', date(2020, 5, 22), date(2020, 5, 25))
-        er.get_rate(ExchangeRate.min_date - timedelta(days=1))
+    er = ExchangeRate('USD', date(2020, 5, 22), date(2020, 5, 25))
+    with pytest.raises(ClickException) as excinfo:
+        er.get_rate(date(2017, 1, 2))
+    assert excinfo.value.message == "Unable to find exchange rate on 2017-01-02"  # noqa: E501
