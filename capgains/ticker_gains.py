@@ -17,9 +17,11 @@ class TickerGains:
             transaction.superficial_loss = \
                 self._is_superficial_loss(transaction, transactions)
             if transaction.superficial_loss:
-                transaction.acb -= transaction.capital_gain
-                transaction.acb_delta -= transaction.capital_gain
+                superficial_loss = transaction.capital_gain
+                transaction.acb -= superficial_loss
+                transaction.acb_delta -= superficial_loss
                 transaction.capital_gain = 0
+                self._total_acb -= superficial_loss
 
     def _superficial_window_filter(self, transaction, min_date, max_date):
         """Filter out BUY transactions that fall within

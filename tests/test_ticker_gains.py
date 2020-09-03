@@ -87,7 +87,7 @@ def test_superficial_loss_purchase_after_loss(exchange_rates_mock):
 
 def test_loss_no_balance_after_window(exchange_rates_mock):
     """Testing if transaction is not marked as a superficial loss if
-    there are is no share balance 30 days after the loss"""
+    there is no share balance 30 days after the loss"""
     transactions = [
         Transaction(
             date(2018, 1, 1),
