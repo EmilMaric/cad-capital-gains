@@ -68,7 +68,7 @@ def _get_total_gains(calculated_dicts):
     total = 0
     for calculated_dict in calculated_dicts:
         total += calculated_dict['capital_gain']
-    return "{0:,.2f}".format(total)
+    return total
 
 
 def _get_map_of_currencies_to_exchange_rates(transactions):
@@ -123,7 +123,7 @@ def capgains_calc(transactions, year, tickers=None):
             click.echo("No capital gains\n")
             continue
         total_gains = _get_total_gains(calculated_dicts)
-        click.echo("[Total Gains = {}]\n".format(total_gains))
+        click.echo("[Total Gains = {0:,.2f}]\n".format(total_gains))
         headers = calculated_dicts[0].keys()
         rows = [t.values() for t in calculated_dicts]
         output = tabulate.tabulate(rows, headers=headers,
