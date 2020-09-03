@@ -2,13 +2,31 @@
 # Store the file as 'cad-capgains' on PyPi, but have the CLI command be named
 # 'capgains'
 name = "cad-capgains"
-version = "0.1.0"
+version = "1.0.0"
 description = "A CLI tool to calculate your capital gains"
 license = "MIT"
 readme = "README.md"
-authors = ["Emil Maric"]
+authors = [
+    "Eddy Maric",
+    "Emil Maric"
+]
 packages = [
     { include = "capgains" },
+]
+homepage = "https://github.com/EmilMaric/cad-capital-gains"
+repository = "https://github.com/EmilMaric/cad-capital-gains"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+keywords = [
+    'capital',
+    'gains',
+    'canadian',
+    'tax'
 ]
 
 [tool.poetry.dependencies]
