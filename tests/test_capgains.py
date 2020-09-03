@@ -77,6 +77,8 @@ def test_calc_no_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
     assert result.exit_code == 0
     assert result.output == """\
 ANET-2018
+[Total Gains = 6,970.00]
+
 date        transaction_type    ticker    action      qty    price    commission    currency    share_balance    proceeds    capital_gain    acb_delta       acb
 ----------  ------------------  --------  --------  -----  -------  ------------  ----------  ---------------  ----------  --------------  -----------  --------
 2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD               50   11,980.00        6,970.00    -5,010.00  5,010.00
@@ -100,6 +102,8 @@ def test_calc_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
     assert result.exit_code == 0
     assert result.output == """\
 ANET-2018
+[Total Gains = 6,970.00]
+
 date        transaction_type    ticker    action      qty    price    commission    currency    share_balance    proceeds    capital_gain    acb_delta       acb
 ----------  ------------------  --------  --------  -----  -------  ------------  ----------  ---------------  ----------  --------------  -----------  --------
 2018-02-20  RSU VEST            ANET      SELL         50   120.00         10.00         USD               50   11,980.00        6,970.00    -5,010.00  5,010.00

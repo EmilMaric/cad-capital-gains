@@ -64,6 +64,13 @@ def _filter_calculated_transaction(transaction, year):
     return True
 
 
+def _get_total_gains(calculated_dicts):
+    total = 0
+    for calculated_dict in calculated_dicts:
+        total += calculated_dict['capital_gain']
+    return "{0:,.2f}".format(total)
+
+
 def _get_map_of_currencies_to_exchange_rates(transactions):
     """First, split the list of transactions into sublists where each sublist
     will only contain transactions with the same currency"""
@@ -115,6 +122,8 @@ def capgains_calc(transactions, year, tickers=None):
         if not calculated_dicts:
             click.echo("No capital gains\n")
             continue
+        total_gains = _get_total_gains(calculated_dicts)
+        click.echo("[Total Gains = {}]\n".format(total_gains))
         headers = calculated_dicts[0].keys()
         rows = [t.values() for t in calculated_dicts]
         output = tabulate.tabulate(rows, headers=headers,
