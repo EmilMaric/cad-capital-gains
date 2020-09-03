@@ -123,9 +123,9 @@ def capgains_calc(transactions, year, tickers=None):
             click.echo("No capital gains\n")
             continue
         total_gains = _get_total_gains(calculated_dicts)
-        click.echo("[Total Gains = {0:,.2f}]\n".format(total_gains))
+        click.echo("[Total Gains = {0:,.2f}]".format(total_gains))
         headers = calculated_dicts[0].keys()
         rows = [t.values() for t in calculated_dicts]
-        output = tabulate.tabulate(rows, headers=headers,
+        output = tabulate.tabulate(rows, headers=headers, tablefmt="psql",
                                    colalign=colalign, floatfmt=floatfmt)
         click.echo("{}\n".format(output))

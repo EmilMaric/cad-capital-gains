@@ -44,5 +44,5 @@ def capgains_show(transactions, tickers=None):
     headers = transaction_dicts[0].keys()
     rows = [t.values() for t in transaction_dicts]
     output = tabulate.tabulate(rows, headers=headers, colalign=colalign,
-                               floatfmt=floatfmt)
+                               tablefmt="psql", floatfmt=floatfmt)
     click.echo(output)
