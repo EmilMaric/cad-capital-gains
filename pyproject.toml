@@ -6,6 +6,10 @@ version = "1.0.0"
 description = "A CLI tool to calculate your capital gains"
 license = "MIT"
 readme = "README.md"
+maintainers = [
+    "Eddy Maric",
+    "Emil Maric"
+]
 authors = [
     "Eddy Maric",
     "Emil Maric"
