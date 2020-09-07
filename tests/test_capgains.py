@@ -1,4 +1,3 @@
-from capgains import __version__
 from click.testing import CliRunner
 from capgains.cli import capgains
 
