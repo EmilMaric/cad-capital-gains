@@ -1,12 +1,7 @@
-from capgains import __version__
 from click.testing import CliRunner
 from capgains.cli import capgains
 
 from tests.helpers import create_csv_file, transactions_to_list
-
-
-def test_version():
-    assert __version__ == '1.0.0'
 
 
 def test_show_file_not_found(testfiles_dir):

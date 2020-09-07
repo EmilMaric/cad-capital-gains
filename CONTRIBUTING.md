@@ -31,4 +31,12 @@ poetry run capgains ...
 ```
 
 ## Creating a release
-To be added.
+Once you have all the changes you desire for a release, do the following. Note that
+we follow [semantic versioning](https://semver.org/) for our projects.
+
+1. Create a new branch
+2. Bump up the release numbers in `pyproject.toml` and `capgains/__init__.py`
+3. Push + create PR. Once PR is ready, merge it into the master branch.
+4. Create an annotated tag `git tag -a <VERSION>`, and push the tag with
+`git push <VERSION>`. The ensuing CI build will notice that this is a tagged commit
+and will package the project and push it to PyPI.
