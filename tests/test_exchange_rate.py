@@ -1,6 +1,7 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import pytest
 from click import ClickException
+import re
 import requests_mock as rm
 import requests
 
@@ -18,7 +19,20 @@ def _request_error_throwing_test(requests_mock, expected_error,
 
 @pytest.fixture(scope='function')
 def USD_exchange_rates_mock(requests_mock):
-    requests_mock.get(rm.ANY,
+    noon_rate_matcher = re.compile(ExchangeRate.valet_obs_url)
+    indicative_rate_matcher = re.compile(ExchangeRate.valet_obs_url + '/FX')
+    requests_mock.get(noon_rate_matcher,
+                      json={
+                          "observations": [
+                              {
+                                  "d": "2016-05-21",
+                                  "IEXE0101": {
+                                      "v": "1.1"
+                                  }
+                              },
+                          ]
+                      })
+    requests_mock.get(indicative_rate_matcher,
                       json={
                         "observations": [
                             {
@@ -52,16 +66,30 @@ def test_exchange_rate_end_after_start():
 
 
 def test_exchange_rate_init_before_min_date():
-    early = date(2017, 1, 2)
+    early = date(2007, 4, 30)
     with pytest.raises(ClickException) as excinfo:
         ExchangeRate('USD', early, early)
-    assert excinfo.value.message == "Start date is before minimum date 2017-01-03"  # noqa: E501
+    assert (excinfo.value.message ==
+            "We do not support having transactions before 2007-05-01")
+
+
+def test_exchange_rate_after_max_date():
+    """Test that we throw an error when we request exchange rates after the
+    maximum date (which is today's date)
+    """
+    today = datetime.today().date()
+    tmr = today + timedelta(days=1)
+    with pytest.raises(ClickException) as excinfo:
+        ExchangeRate('USD', today, tmr)
+    assert(excinfo.value.message ==
+           "We do not support having transactions past today's date")
 
 
 def test_exchange_rate_ok_date(USD_exchange_rates_mock):
     # set the date on a Friday
+    thursday = date(2020, 5, 21)
     friday = date(2020, 5, 22)
-    er = ExchangeRate('USD', ExchangeRate.min_date, date.today())
+    er = ExchangeRate('USD', thursday, friday)
     assert er.get_rate(friday) == 1.3
 
 
@@ -69,9 +97,24 @@ def test_exchange_rate_weekend_date(USD_exchange_rates_mock):
     # set the date on a Sunday, expect fridays rate
     friday = date(2020, 5, 22)
     sunday = date(2020, 5, 24)
-    er = ExchangeRate('USD', ExchangeRate.min_date, date.today())
+    er = ExchangeRate('USD', friday, sunday)
     expected_rate = er.get_rate(friday)
     assert er.get_rate(sunday) == expected_rate
+
+
+def test_exchange_rate_noon_only(USD_exchange_rates_mock):
+    noon_rate_date = date(2016, 5, 21)
+    er = ExchangeRate('USD', noon_rate_date, noon_rate_date)
+    expected_rate = er.get_rate(noon_rate_date)
+    assert expected_rate == 1.1
+
+
+def test_exchange_rate_noon_and_indicative(USD_exchange_rates_mock):
+    noon_rate_date = date(2016, 5, 21)
+    indicative_rate_date = date(2020, 5, 22)
+    er = ExchangeRate('USD', noon_rate_date, indicative_rate_date)
+    assert er.get_rate(noon_rate_date) == 1.1
+    assert er.get_rate(indicative_rate_date) == 1.3
 
 
 def test_cad_to_cad_rate_is_1():
