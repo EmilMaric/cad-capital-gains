@@ -10,18 +10,13 @@ class TickerGains:
 
     def add_transactions(self, transactions, exchange_rates):
         """Adds all transactions and updates the calculated values"""
-        for transaction in transactions:
-            rate = exchange_rates[transaction.currency] \
-                    .get_rate(transaction.date)
-            self._add_transaction(transaction, rate)
-            transaction.superficial_loss = \
-                self._is_superficial_loss(transaction, transactions)
-            if transaction.superficial_loss:
-                superficial_loss = transaction.capital_gain
-                transaction.acb -= superficial_loss
-                transaction.acb_delta -= superficial_loss
-                transaction.capital_gain = 0
-                self._total_acb -= superficial_loss
+        for t in transactions:
+            rate = exchange_rates[t.currency].get_rate(t.date)
+            t.exchange_rate = rate
+            self._add_transaction(t)
+            if self._is_superficial_loss(t, transactions):
+                self._total_acb -= t.capital_gain
+                t.set_superficial_loss()
 
     def _superficial_window_filter(self, transaction, min_date, max_date):
         """Filter out BUY transactions that fall within
@@ -51,32 +46,27 @@ class TickerGains:
                 balance += window_transaction.qty
         return balance > 0
 
-    def _add_transaction(self, transaction, exchange_rate):
+    def _add_transaction(self, transaction):
         """Adds a transaction and updates the calculated values."""
-        new_share_balance = self._share_balance
-        new_total_acb = self._total_acb
         if self._share_balance == 0:
             # to prevent divide by 0 error
             old_acb_per_share = 0
         else:
             old_acb_per_share = self._total_acb / self._share_balance
+        proceeds = (transaction.qty * transaction.price) * transaction.exchange_rate  # noqa: E501
         if transaction.action == 'SELL':
-            new_share_balance -= transaction.qty
-            proceeds = (transaction.qty * transaction.price - transaction.commission) * exchange_rate  # noqa: E501
-            capital_gain = proceeds - old_acb_per_share * transaction.qty
-            acb_delta = -(old_acb_per_share * transaction.qty)
+            self._share_balance -= transaction.qty
+            acb = old_acb_per_share * transaction.qty
+            capital_gain = proceeds - transaction.expenses - acb
+            self._total_acb -= acb
         else:
-            new_share_balance += transaction.qty
-            proceeds = -(transaction.qty * transaction.price + transaction.commission) * exchange_rate  # noqa: E501
+            self._share_balance += transaction.qty
+            acb = proceeds + transaction.expenses
             capital_gain = 0.0
-            acb_delta = -proceeds
-        new_total_acb += acb_delta
-        if new_share_balance < 0:
+            self._total_acb += acb
+        if self._share_balance < 0:
             raise ClickException("Transaction caused negative share balance")
-        transaction.share_balance = new_share_balance
+        transaction.share_balance = self._share_balance
         transaction.proceeds = proceeds
         transaction.capital_gain = capital_gain
-        transaction.acb_delta = acb_delta
-        transaction.acb = new_total_acb
-        self._share_balance = new_share_balance
-        self._total_acb = new_total_acb
+        transaction.acb = acb

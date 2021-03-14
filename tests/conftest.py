@@ -3,6 +3,7 @@ import requests_mock as rm
 from datetime import date
 
 from capgains.transaction import Transaction
+from capgains.transactions import Transactions
 
 
 @pytest.fixture(scope="session")
@@ -54,7 +55,7 @@ def transactions():
             'USD'
         )
     ]
-    return trans
+    return Transactions(trans)
 
 
 @pytest.fixture(scope='function')

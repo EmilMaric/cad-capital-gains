@@ -222,7 +222,8 @@ def test_ticker_gains_negative_balance(transactions, exchange_rates_mock):
     this causes a negative balance, which is impossible"""
     sell_transaction = transactions[2]
     tg = TickerGains(sell_transaction.ticker)
-    er = ExchangeRate('USD', transactions[2].date, transactions[2].date)
+    er = ExchangeRate('USD', transactions[2].date,
+                      transactions[2].date)
     er_map = {'USD': er}
     with pytest.raises(ClickException) as excinfo:
         tg.add_transactions([sell_transaction], er_map)
@@ -242,20 +243,26 @@ def test_ticker_gains_ok(transactions, exchange_rates_mock):
                             transactions[3]]
 
     tg.add_transactions(transactions_to_test, er_map)
+    assert transactions[0].exchange_rate == 2.0
     assert transactions[0].share_balance == 100
-    assert transactions[0].proceeds == -10020.00
+    assert transactions[0].proceeds == 10000.0
     assert transactions[0].capital_gain == 0.0
-    assert transactions[0].acb_delta == 10020.00
     assert transactions[0].acb == 10020.00
+    assert transactions[0].superficial_loss is False
+    assert transactions[0].expenses == 20.0
 
+    assert transactions[2].exchange_rate == 2.0
     assert transactions[2].share_balance == 50
-    assert transactions[2].proceeds == 11980.00
+    assert transactions[2].proceeds == 12000.00
     assert transactions[2].capital_gain == 6970.00
-    assert transactions[2].acb_delta == -5010.00
     assert transactions[2].acb == 5010.00
+    assert transactions[2].superficial_loss is False
+    assert transactions[2].expenses == 20.0
 
+    assert transactions[3].exchange_rate == 2.0
     assert transactions[3].share_balance == 100
-    assert transactions[3].proceeds == -13020.00
+    assert transactions[3].proceeds == 13000.00
     assert transactions[3].capital_gain == 0.0
-    assert transactions[3].acb_delta == 13020.00
-    assert transactions[3].acb == 18030.00
+    assert transactions[3].acb == 13020.00
+    assert transactions[3].superficial_loss is False
+    assert transactions[3].expenses == 20.0

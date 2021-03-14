@@ -5,7 +5,7 @@ import tabulate
 # describes how to align the individual table columns
 colalign = (
     "left",   # date
-    "left",   # transaction_type
+    "left",   # description
     "left",   # ticker
     "left",   # action
     "right",  # qty
@@ -16,7 +16,7 @@ colalign = (
 
 floatfmt = (
     None,    # date
-    None,    # transaction_type
+    None,    # description
     None,    # ticker
     None,    # action
     None,    # qty
@@ -26,23 +26,24 @@ floatfmt = (
 )
 
 
-def _filter_transaction(transaction, tickers=None):
-    if tickers and transaction.ticker not in tickers:
-        return False
-    return True
-
-
 def capgains_show(transactions, tickers=None):
     """Take a list of transactions and print them in tabular format."""
-    # prune transactions that don't match the filter options
-    filtered_transactions = list(filter(
-        lambda t: _filter_transaction(t, tickers=tickers), transactions))
+    filtered_transactions = transactions.filter_by(tickers=tickers)
     if not filtered_transactions:
         click.echo("No results found")
         return
-    transaction_dicts = [t.to_dict() for t in filtered_transactions]
-    headers = transaction_dicts[0].keys()
-    rows = [t.values() for t in transaction_dicts]
+    headers = ["date", "description", "ticker", "action", "qty", "price",
+               "commission", "currency"]
+    rows = [[
+        t.date,
+        t.description,
+        t.ticker,
+        t.action,
+        t.qty,
+        t.price,
+        t.commission,
+        t.currency
+    ] for t in filtered_transactions]
     output = tabulate.tabulate(rows, headers=headers, colalign=colalign,
                                tablefmt="psql", floatfmt=floatfmt)
     click.echo(output)
