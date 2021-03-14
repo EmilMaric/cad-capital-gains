@@ -73,7 +73,7 @@ $ capgains <command> --help
 You can take this output and plug it into your favourite tax software (Simpletax, StudioTax, etc) and verify that the capital gains/losses that the tax software reports lines up with what the output of this command says.
 
 # Finding issues
-If you find issues using this tool, please create an Issue using the Github issue tracker and one of us will try to fix it.
+If you find issues using this tool, please create an Issue using the [Github issue tracker](https://github.com/EmilMaric/cad-capital-gains/issues) and one of us will try to fix it.
 
 # Contributing
 If you would like to contribute, please read the [CONTRIBUTING.md]() page
