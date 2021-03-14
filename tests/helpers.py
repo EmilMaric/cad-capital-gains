@@ -29,6 +29,9 @@ def create_csv_file(directory, filename, data=None, is_readable=True):
 
 def transactions_to_list(transactions):
     transactions_list = []
-    for transaction in transactions:
-        transactions_list.append(list(transaction.to_dict().values()))
+    for t in transactions:
+        transactions_list.append([
+            t.date, t.description, t.ticker, t.action, t.qty, t.price,
+            t.commission, t.currency
+        ])
     return transactions_list

@@ -17,16 +17,16 @@ def test_transactions_reader_default(testfiles_dir, transactions):
                                   307.96,
                                   20.99,
                                   'USD')
-    transactions = transactions_to_list([exp_transaction])
+    exp_transactions = transactions_to_list([exp_transaction])
     filepath = create_csv_file(testfiles_dir,
                                "good.csv",
-                               transactions,
+                               exp_transactions,
                                True)
 
     actual_transactions = TransactionsReader.get_transactions(filepath)
     assert len(actual_transactions) == 1
     actual_transaction = actual_transactions[0]
-    assert actual_transaction.to_dict() == exp_transaction.to_dict()
+    assert actual_transaction.__dict__ == exp_transaction.__dict__
 
 
 def test_transactions_reader_columns_error(testfiles_dir):

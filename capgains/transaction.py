@@ -1,44 +1,30 @@
-from collections import OrderedDict
-
-
 class Transaction:
     """Represents a transaction entry from the CSV-file"""
-    date_idx = 0
-    transaction_type_idx = 1
-    ticker_idx = 2
-    action_idx = 3
-    qty_idx = 4
-    price_idx = 5
-    commission_idx = 6
-    currency_idx = 7
-    num_vals_show = 8
-    num_vals_calculated = 5
-    num_vals_all = num_vals_show + num_vals_calculated
 
-    def __init__(self, date, transaction_type, ticker, action, qty, price,
+    def __init__(self, date, description, ticker, action, qty, price,
                  commission, currency):
         self._date = date
-        self._transaction_type = transaction_type
+        self._description = description
         self._ticker = ticker
         self._action = action
         self._qty = qty
         self._price = price
         self._commission = commission
         self._currency = currency
-        self._share_balance = None
-        self._proceeds = None
-        self._capital_gain = None
-        self._acb_delta = None
-        self._acb = None
-        self._superficial_loss = None
+        self._exchange_rate = None
+        self._share_balance = 0
+        self._proceeds = 0.0
+        self._capital_gain = 0.0
+        self._acb = 0.0
+        self._superficial_loss = False
 
     @property
     def date(self):
         return self._date
 
     @property
-    def transaction_type(self):
-        return self._transaction_type
+    def description(self):
+        return self._description
 
     @property
     def ticker(self):
@@ -65,12 +51,20 @@ class Transaction:
         return self._currency
 
     @property
+    def exchange_rate(self):
+        return self._exchange_rate
+
+    @exchange_rate.setter
+    def exchange_rate(self, exchange_rate):
+        self._exchange_rate = exchange_rate
+
+    @property
     def share_balance(self):
         return self._share_balance
 
     @share_balance.setter
     def share_balance(self, share_balance):
-        if(share_balance < 0):
+        if (share_balance < 0):
             raise ValueError("Share balance cannot be negative")
         self._share_balance = share_balance
 
@@ -91,14 +85,6 @@ class Transaction:
         self._capital_gain = capital_gain
 
     @property
-    def acb_delta(self):
-        return self._acb_delta
-
-    @acb_delta.setter
-    def acb_delta(self, acb_delta):
-        self._acb_delta = acb_delta
-
-    @property
     def acb(self):
         return self._acb
 
@@ -114,20 +100,10 @@ class Transaction:
     def superficial_loss(self, superficial_loss):
         self._superficial_loss = superficial_loss
 
-    def to_dict(self, calculated_values=False):
-        d = OrderedDict()
-        d['date'] = self.date
-        d['transaction_type'] = self.transaction_type
-        d['ticker'] = self.ticker
-        d['action'] = self.action
-        d['qty'] = self.qty
-        d['price'] = self.price
-        d['commission'] = self.commission
-        d['currency'] = self.currency
-        if calculated_values:
-            d['share_balance'] = self.share_balance
-            d['proceeds'] = self.proceeds
-            d['capital_gain'] = self.capital_gain
-            d['acb_delta'] = self.acb_delta
-            d['acb'] = self.acb
-        return d
+    @property
+    def expenses(self):
+        return self.commission * self.exchange_rate
+
+    def set_superficial_loss(self):
+        self.superficial_loss = True
+        self.capital_gain = 0.0
