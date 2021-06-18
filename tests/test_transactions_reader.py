@@ -127,6 +127,9 @@ def test_transactions_qty_not_integer(testfiles_dir):
                               50.00,
                               0.0,
                               'USD')
+    # Overwrite the qty after creating the object because otherwise the object
+    # initialization will throw an error
+    transaction._qty = 'BLAH'
     transactions = transactions_to_list([transaction])
     filepath = create_csv_file(testfiles_dir,
                                "qtynotinteger.csv,",
@@ -134,7 +137,7 @@ def test_transactions_qty_not_integer(testfiles_dir):
                                True)
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
-    assert excinfo.value.message == "The quanitity entered 100.1 is not an integer"  # noqa: E501
+    assert excinfo.value.message == "The quantity entered BLAH is not a valid number"  # noqa: E501
 
 
 def test_transactions_price_not_float(testfiles_dir):
@@ -144,9 +147,12 @@ def test_transactions_price_not_float(testfiles_dir):
                               'ANET',
                               'BUY',
                               100,
-                              "notafloat",
+                              100,
                               0.0,
                               'USD')
+    # Overwrite the price after creating the object because otherwise the
+    # object initialization will throw an error
+    transaction._price = 'BLAH'
     transactions = transactions_to_list([transaction])
     filepath = create_csv_file(testfiles_dir,
                                "pricenotfloat.csv,",
@@ -154,7 +160,7 @@ def test_transactions_price_not_float(testfiles_dir):
                                True)
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
-    assert excinfo.value.message == "The price entered notafloat is not a float value"  # noqa: E501
+    assert excinfo.value.message == "The price entered BLAH is not a valid number"  # noqa: E501
 
 
 def test_transactions_commission_not_float(testfiles_dir):
@@ -165,8 +171,11 @@ def test_transactions_commission_not_float(testfiles_dir):
                               'BUY',
                               100,
                               50.00,
-                              "notafloat",
+                              0.0,
                               'USD')
+    # Overwrite the commission after creating the object because otherwise the
+    # object initialization will throw an error
+    transaction._commission = 'BLAH'
     transactions = transactions_to_list([transaction])
     filepath = create_csv_file(testfiles_dir,
                                "commissionnotfloat.csv,",
@@ -174,4 +183,4 @@ def test_transactions_commission_not_float(testfiles_dir):
                                True)
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
-    assert excinfo.value.message == "The commission entered notafloat is not a float value"  # noqa: E501
+    assert excinfo.value.message == "The commission entered BLAH is not a valid number"  # noqa: E501

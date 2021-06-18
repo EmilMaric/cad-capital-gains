@@ -10,22 +10,11 @@ colalign = (
     "left",   # date
     "left",   # description
     "left",   # ticker
-    "left",   # qty
+    "right",  # qty
     "right",  # proceeds
     "right",  # acb
     "right",  # commission
     "right",  # capital gain
-)
-
-floatfmt = (
-    None,    # date
-    None,    # description
-    None,    # ticker
-    None,    # qty
-    ",.2f",  # proceeds
-    ",.2f",  # acb
-    ",.2f",  # commission
-    ",.2f",  # capital gain
 )
 
 
@@ -84,12 +73,12 @@ def capgains_calc(transactions, year, tickers=None):
             t.date,
             t.description,
             t.ticker,
-            t.qty,
-            t.proceeds,
-            t.acb,
-            t.expenses,
-            t.capital_gain
+            "{0:f}".format(t.qty.normalize()),
+            "{:,.2f}".format(t.proceeds),
+            "{:,.2f}".format(t.acb),
+            "{:,.2f}".format(t.expenses),
+            "{:,.2f}".format(t.capital_gain)
         ] for t in transactions_to_report]
         output = tabulate.tabulate(rows, headers=headers, tablefmt="psql",
-                                   colalign=colalign, floatfmt=floatfmt)
+                                   colalign=colalign, disable_numparse=True)
         click.echo("{}\n".format(output))

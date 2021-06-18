@@ -1,9 +1,11 @@
-from datetime import date, timedelta, datetime
 import pytest
-from click import ClickException
 import re
 import requests_mock as rm
 import requests
+
+from datetime import date, timedelta, datetime
+from decimal import Decimal
+from click import ClickException
 
 from capgains.exchange_rate import ExchangeRate
 
@@ -90,7 +92,7 @@ def test_exchange_rate_ok_date(USD_exchange_rates_mock):
     thursday = date(2020, 5, 21)
     friday = date(2020, 5, 22)
     er = ExchangeRate('USD', thursday, friday)
-    assert er.get_rate(friday) == 1.3
+    assert er.get_rate(friday) == Decimal('1.3')
 
 
 def test_exchange_rate_weekend_date(USD_exchange_rates_mock):
@@ -106,15 +108,15 @@ def test_exchange_rate_noon_only(USD_exchange_rates_mock):
     noon_rate_date = date(2016, 5, 21)
     er = ExchangeRate('USD', noon_rate_date, noon_rate_date)
     expected_rate = er.get_rate(noon_rate_date)
-    assert expected_rate == 1.1
+    assert expected_rate == Decimal('1.1')
 
 
 def test_exchange_rate_noon_and_indicative(USD_exchange_rates_mock):
     noon_rate_date = date(2016, 5, 21)
     indicative_rate_date = date(2020, 5, 22)
     er = ExchangeRate('USD', noon_rate_date, indicative_rate_date)
-    assert er.get_rate(noon_rate_date) == 1.1
-    assert er.get_rate(indicative_rate_date) == 1.3
+    assert er.get_rate(noon_rate_date) == Decimal('1.1')
+    assert er.get_rate(indicative_rate_date) == Decimal('1.3')
 
 
 def test_cad_to_cad_rate_is_1():

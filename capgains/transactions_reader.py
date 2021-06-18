@@ -1,6 +1,7 @@
 import csv
 from click import ClickException
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 
 from .transaction import Transaction
 from .transactions import Transactions
@@ -53,26 +54,26 @@ class TransactionsReader:
                     qty_idx = cls.columns.index("qty")
                     qty_str = entry[qty_idx]
                     try:
-                        entry[qty_idx] = int(qty_str)
-                    except ValueError:
+                        entry[qty_idx] = Decimal(qty_str)
+                    except InvalidOperation:
                         raise ClickException(
-                            "The quanitity entered {} is not an integer"
+                            "The quantity entered {} is not a valid number"
                             .format(qty_str))
                     price_idx = cls.columns.index("price")
                     price_str = entry[price_idx]
                     try:
-                        entry[price_idx] = float(price_str)
-                    except ValueError:
+                        entry[price_idx] = Decimal(price_str)
+                    except InvalidOperation:
                         raise ClickException(
-                            "The price entered {} is not a float value"
+                            "The price entered {} is not a valid number"
                             .format(price_str))
                     commission_idx = cls.columns.index("commission")
                     commission_str = entry[commission_idx]
                     try:
-                        entry[commission_idx] = float(commission_str)
-                    except ValueError:
+                        entry[commission_idx] = Decimal(commission_str)
+                    except InvalidOperation:
                         raise ClickException(
-                            "The commission entered {} is not a float value"
+                            "The commission entered {} is not a valid number"
                             .format(commission_str))
                     transaction = Transaction(*entry)
                     if last_date:

@@ -1,5 +1,6 @@
 import requests
 from datetime import date, timedelta, datetime
+from decimal import Decimal
 from click import ClickException
 
 
@@ -83,7 +84,7 @@ class ExchangeRate:
         for day_rate in rates_json:
             date_str = day_rate[self.date]
             date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            rate = float(day_rate[forex_str][self.value])
+            rate = Decimal(day_rate[forex_str][self.value])
             rates[date] = rate
         return rates
 
@@ -130,7 +131,7 @@ class ExchangeRate:
             not exist for that day"""
         if self._currency_from == self.currency_to:
             # Converting CAD to CAD
-            rate = 1.00
+            rate = Decimal(1.00)
         else:
             # Converting Non-CAD to CAD
             rate = self._get_closest_rate_for_day(date)
