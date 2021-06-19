@@ -12,6 +12,7 @@ Calculating your capital gains and tracking your adjusted cost base (ACB) manual
     - Shares with the same ticker were bought in the 61 day window (30 days before or 30 days after the sale)
     - There is a non-zero balance of shares sharing the same ticker at the end of the 61 day window (30 days after the sale)
 - Outputs the running adjusted cost base (ACB) for every transaction with a non-superficial capital gain/loss
+- Supports fractional quantities of shares
 
 # Installation
 ```bash

@@ -117,7 +117,7 @@ def test_transactions_date_wrong_format(testfiles_dir):
     assert excinfo.value.message == "The date (January 1st 2020) was not entered in the correct format (YYYY-MM-DD)"  # noqa: E501
 
 
-def test_transactions_qty_not_integer(testfiles_dir):
+def test_transactions_qty_not_number(testfiles_dir):
     """Testing TransactionsReader with qty entered in wrong format"""
     transaction = Transaction(date(2020, 2, 20),
                               'RSU VEST',
@@ -140,7 +140,7 @@ def test_transactions_qty_not_integer(testfiles_dir):
     assert excinfo.value.message == "The quantity entered BLAH is not a valid number"  # noqa: E501
 
 
-def test_transactions_price_not_float(testfiles_dir):
+def test_transactions_price_not_number(testfiles_dir):
     """Testing TransactionsReader with price entered in wrong format"""
     transaction = Transaction(date(2020, 2, 20),
                               'RSU VEST',
@@ -163,7 +163,7 @@ def test_transactions_price_not_float(testfiles_dir):
     assert excinfo.value.message == "The price entered BLAH is not a valid number"  # noqa: E501
 
 
-def test_transactions_commission_not_float(testfiles_dir):
+def test_transactions_commission_not_number(testfiles_dir):
     """Testing TransactionsReader with commission entered in wrong format"""
     transaction = Transaction(date(2020, 2, 20),
                               'RSU VEST',
