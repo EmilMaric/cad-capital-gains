@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+
 class Transaction:
     """Represents a transaction entry from the CSV-file"""
 
@@ -7,15 +10,15 @@ class Transaction:
         self._description = description
         self._ticker = ticker
         self._action = action
-        self._qty = qty
-        self._price = price
-        self._commission = commission
+        self._qty = Decimal(qty)
+        self._price = Decimal(price)
+        self._commission = Decimal(commission)
         self._currency = currency
         self._exchange_rate = None
-        self._share_balance = 0
-        self._proceeds = 0.0
-        self._capital_gain = 0.0
-        self._acb = 0.0
+        self._share_balance = Decimal(0.0)
+        self._proceeds = Decimal(0.0)
+        self._capital_gain = Decimal(0.0)
+        self._acb = Decimal(0.0)
         self._superficial_loss = False
 
     @property
@@ -56,7 +59,7 @@ class Transaction:
 
     @exchange_rate.setter
     def exchange_rate(self, exchange_rate):
-        self._exchange_rate = exchange_rate
+        self._exchange_rate = Decimal(exchange_rate)
 
     @property
     def share_balance(self):
@@ -66,7 +69,7 @@ class Transaction:
     def share_balance(self, share_balance):
         if (share_balance < 0):
             raise ValueError("Share balance cannot be negative")
-        self._share_balance = share_balance
+        self._share_balance = Decimal(share_balance)
 
     @property
     def proceeds(self):
@@ -74,7 +77,7 @@ class Transaction:
 
     @proceeds.setter
     def proceeds(self, proceeds):
-        self._proceeds = proceeds
+        self._proceeds = Decimal(proceeds)
 
     @property
     def capital_gain(self):
@@ -82,7 +85,7 @@ class Transaction:
 
     @capital_gain.setter
     def capital_gain(self, capital_gain):
-        self._capital_gain = capital_gain
+        self._capital_gain = Decimal(capital_gain)
 
     @property
     def acb(self):
@@ -90,7 +93,7 @@ class Transaction:
 
     @acb.setter
     def acb(self, acb):
-        self._acb = acb
+        self._acb = Decimal(acb)
 
     @property
     def superficial_loss(self):
@@ -98,7 +101,7 @@ class Transaction:
 
     @superficial_loss.setter
     def superficial_loss(self, superficial_loss):
-        self._superficial_loss = superficial_loss
+        self._superficial_loss = Decimal(superficial_loss)
 
     @property
     def expenses(self):
@@ -106,4 +109,4 @@ class Transaction:
 
     def set_superficial_loss(self):
         self.superficial_loss = True
-        self.capital_gain = 0.0
+        self.capital_gain = Decimal(0.0)

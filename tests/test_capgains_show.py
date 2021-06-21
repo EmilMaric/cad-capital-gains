@@ -1,4 +1,7 @@
+from datetime import date
+
 from capgains.commands import capgains_show as CapGainsShow
+from capgains.transaction import Transaction
 from capgains.transactions import Transactions
 
 
@@ -82,5 +85,42 @@ def test_multiple_tickers(transactions, capfd):
 | 2018-02-20 | RSU VEST      | GOOGL    | BUY      |    30 |   20.00 |        10.00 |        USD |
 | 2018-02-20 | RSU VEST      | ANET     | SELL     |    50 |  120.00 |        10.00 |        USD |
 | 2019-02-15 | ESPP PURCHASE | ANET     | BUY      |    50 |  130.00 |        10.00 |        USD |
++------------+---------------+----------+----------+-------+---------+--------------+------------+
+"""  # noqa: E501
+
+
+def test_partial_shares(capfd, requests_mock):
+    """Testing capgains_show with partial shares"""
+    partial_buy = Transaction(
+        date(2017, 2, 15),
+        'ESPP PURCHASE',
+        'ANET',
+        'BUY',
+        0.5,
+        50.00,
+        0.00,
+        'CAD')
+    partial_sell = Transaction(
+        date(2018, 2, 20),
+        'RSU VEST',
+        'ANET',
+        'SELL',
+        0.5,
+        100.00,
+        0.00,
+        'CAD')
+    transactions = Transactions([
+        partial_buy,
+        partial_sell
+    ])
+
+    CapGainsShow.capgains_show(transactions, ['ANET'])
+    out, _ = capfd.readouterr()
+    assert out == """\
++------------+---------------+----------+----------+-------+---------+--------------+------------+
+| date       | description   | ticker   | action   |   qty |   price |   commission |   currency |
+|------------+---------------+----------+----------+-------+---------+--------------+------------|
+| 2017-02-15 | ESPP PURCHASE | ANET     | BUY      |   0.5 |   50.00 |         0.00 |        CAD |
+| 2018-02-20 | RSU VEST      | ANET     | SELL     |   0.5 |  100.00 |         0.00 |        CAD |
 +------------+---------------+----------+----------+-------+---------+--------------+------------+
 """  # noqa: E501

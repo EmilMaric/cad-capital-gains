@@ -14,17 +14,6 @@ colalign = (
     "right",  # currency
 )
 
-floatfmt = (
-    None,    # date
-    None,    # description
-    None,    # ticker
-    None,    # action
-    None,    # qty
-    ",.2f",  # price
-    ",.2f",  # commission
-    None,    # currency
-)
-
 
 def capgains_show(transactions, tickers=None):
     """Take a list of transactions and print them in tabular format."""
@@ -39,11 +28,11 @@ def capgains_show(transactions, tickers=None):
         t.description,
         t.ticker,
         t.action,
-        t.qty,
-        t.price,
-        t.commission,
+        "{0:f}".format(t.qty.normalize()),
+        "{:,.2f}".format(t.price),
+        "{:,.2f}".format(t.commission),
         t.currency
     ] for t in filtered_transactions]
     output = tabulate.tabulate(rows, headers=headers, colalign=colalign,
-                               tablefmt="psql", floatfmt=floatfmt)
+                               tablefmt="psql", disable_numparse=True)
     click.echo(output)

@@ -14,9 +14,9 @@ def test_no_ticker(transactions, capfd, exchange_rates_mock):
 ANET-2018
 [Total Gains = 6,970.00]
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |      ACB |   outlays |   capital gain/loss |
+| date       | description   | ticker   |   qty |   proceeds |      ACB |   outlays |   capital gain/loss |
 |------------+---------------+----------+-------+------------+----------+-----------+---------------------|
-| 2018-02-20 | RSU VEST      | ANET     | 50    |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
+| 2018-02-20 | RSU VEST      | ANET     |    50 |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
 
 GOOGL-2018
@@ -33,9 +33,9 @@ def test_tickers(transactions, capfd, exchange_rates_mock):
 ANET-2018
 [Total Gains = 6,970.00]
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |      ACB |   outlays |   capital gain/loss |
+| date       | description   | ticker   |   qty |   proceeds |      ACB |   outlays |   capital gain/loss |
 |------------+---------------+----------+-------+------------+----------+-----------+---------------------|
-| 2018-02-20 | RSU VEST      | ANET     | 50    |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
+| 2018-02-20 | RSU VEST      | ANET     |    50 |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
 
 """  # noqa: E501
@@ -105,16 +105,16 @@ def test_superficial_loss_not_displayed(capfd, exchange_rates_mock):
 ANET-2018
 [Total Gains = -8,160.00]
 +------------+---------------+----------+-------+------------+-----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |       ACB |   outlays |   capital gain/loss |
+| date       | description   | ticker   |   qty |   proceeds |       ACB |   outlays |   capital gain/loss |
 |------------+---------------+----------+-------+------------+-----------+-----------+---------------------|
-| 2018-12-01 | RSU VEST      | ANET     | 1     |   2,000.00 | 10,140.00 |     20.00 |           -8,160.00 |
+| 2018-12-01 | RSU VEST      | ANET     |     1 |   2,000.00 | 10,140.00 |     20.00 |           -8,160.00 |
 +------------+---------------+----------+-------+------------+-----------+-----------+---------------------+
 
 """  # noqa: E501
 
 
 def test_calc_mixed_currencies(capfd, requests_mock):
-    """testing capgains_calc with mixed currencies"""
+    """Testing capgains_calc with mixed currencies"""
     usd_transaction = Transaction(
             date(2017, 2, 15),
             'ESPP PURCHASE',
@@ -151,9 +151,48 @@ def test_calc_mixed_currencies(capfd, requests_mock):
 ANET-2018
 [Total Gains = -5,000.00]
 +------------+---------------+----------+-------+------------+-----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |       ACB |   outlays |   capital gain/loss |
+| date       | description   | ticker   |   qty |   proceeds |       ACB |   outlays |   capital gain/loss |
 |------------+---------------+----------+-------+------------+-----------+-----------+---------------------|
-| 2018-02-20 | RSU VEST      | ANET     | 100   |   5,000.00 | 10,000.00 |      0.00 |           -5,000.00 |
+| 2018-02-20 | RSU VEST      | ANET     |   100 |   5,000.00 | 10,000.00 |      0.00 |           -5,000.00 |
 +------------+---------------+----------+-------+------------+-----------+-----------+---------------------+
+
+"""  # noqa: E501
+
+
+def test_partial_shares(capfd, requests_mock):
+    """Testing capgains_calc with partial shares"""
+    partial_buy = Transaction(
+        date(2017, 2, 15),
+        'ESPP PURCHASE',
+        'ANET',
+        'BUY',
+        0.5,
+        50.00,
+        0.00,
+        'CAD')
+    partial_sell = Transaction(
+        date(2018, 2, 20),
+        'RSU VEST',
+        'ANET',
+        'SELL',
+        0.5,
+        100.00,
+        0.00,
+        'CAD')
+    transactions = Transactions([
+        partial_buy,
+        partial_sell
+    ])
+
+    CapGainsCalc.capgains_calc(transactions, 2018)
+    out, _ = capfd.readouterr()
+    assert out == """\
+ANET-2018
+[Total Gains = 25.00]
++------------+---------------+----------+-------+------------+-------+-----------+---------------------+
+| date       | description   | ticker   |   qty |   proceeds |   ACB |   outlays |   capital gain/loss |
+|------------+---------------+----------+-------+------------+-------+-----------+---------------------|
+| 2018-02-20 | RSU VEST      | ANET     |   0.5 |      50.00 | 25.00 |      0.00 |               25.00 |
++------------+---------------+----------+-------+------------+-------+-----------+---------------------+
 
 """  # noqa: E501

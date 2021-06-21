@@ -117,7 +117,7 @@ def test_transactions_date_wrong_format(testfiles_dir):
     assert excinfo.value.message == "The date (January 1st 2020) was not entered in the correct format (YYYY-MM-DD)"  # noqa: E501
 
 
-def test_transactions_qty_not_integer(testfiles_dir):
+def test_transactions_qty_not_number(testfiles_dir):
     """Testing TransactionsReader with qty entered in wrong format"""
     transaction = Transaction(date(2020, 2, 20),
                               'RSU VEST',
@@ -127,6 +127,9 @@ def test_transactions_qty_not_integer(testfiles_dir):
                               50.00,
                               0.0,
                               'USD')
+    # Overwrite the qty after creating the object because otherwise the object
+    # initialization will throw an error
+    transaction._qty = 'BLAH'
     transactions = transactions_to_list([transaction])
     filepath = create_csv_file(testfiles_dir,
                                "qtynotinteger.csv,",
@@ -134,19 +137,22 @@ def test_transactions_qty_not_integer(testfiles_dir):
                                True)
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
-    assert excinfo.value.message == "The quanitity entered 100.1 is not an integer"  # noqa: E501
+    assert excinfo.value.message == "The quantity entered BLAH is not a valid number"  # noqa: E501
 
 
-def test_transactions_price_not_float(testfiles_dir):
+def test_transactions_price_not_number(testfiles_dir):
     """Testing TransactionsReader with price entered in wrong format"""
     transaction = Transaction(date(2020, 2, 20),
                               'RSU VEST',
                               'ANET',
                               'BUY',
                               100,
-                              "notafloat",
+                              100,
                               0.0,
                               'USD')
+    # Overwrite the price after creating the object because otherwise the
+    # object initialization will throw an error
+    transaction._price = 'BLAH'
     transactions = transactions_to_list([transaction])
     filepath = create_csv_file(testfiles_dir,
                                "pricenotfloat.csv,",
@@ -154,10 +160,10 @@ def test_transactions_price_not_float(testfiles_dir):
                                True)
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
-    assert excinfo.value.message == "The price entered notafloat is not a float value"  # noqa: E501
+    assert excinfo.value.message == "The price entered BLAH is not a valid number"  # noqa: E501
 
 
-def test_transactions_commission_not_float(testfiles_dir):
+def test_transactions_commission_not_number(testfiles_dir):
     """Testing TransactionsReader with commission entered in wrong format"""
     transaction = Transaction(date(2020, 2, 20),
                               'RSU VEST',
@@ -165,8 +171,11 @@ def test_transactions_commission_not_float(testfiles_dir):
                               'BUY',
                               100,
                               50.00,
-                              "notafloat",
+                              0.0,
                               'USD')
+    # Overwrite the commission after creating the object because otherwise the
+    # object initialization will throw an error
+    transaction._commission = 'BLAH'
     transactions = transactions_to_list([transaction])
     filepath = create_csv_file(testfiles_dir,
                                "commissionnotfloat.csv,",
@@ -174,4 +183,4 @@ def test_transactions_commission_not_float(testfiles_dir):
                                True)
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
-    assert excinfo.value.message == "The commission entered notafloat is not a float value"  # noqa: E501
+    assert excinfo.value.message == "The commission entered BLAH is not a valid number"  # noqa: E501

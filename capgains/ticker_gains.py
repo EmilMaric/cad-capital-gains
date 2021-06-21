@@ -1,5 +1,6 @@
 from click import ClickException
 from datetime import timedelta
+from decimal import Decimal
 
 
 class TickerGains:
@@ -62,7 +63,7 @@ class TickerGains:
         else:
             self._share_balance += transaction.qty
             acb = proceeds + transaction.expenses
-            capital_gain = 0.0
+            capital_gain = Decimal(0.0)
             self._total_acb += acb
         if self._share_balance < 0:
             raise ClickException("Transaction caused negative share balance")

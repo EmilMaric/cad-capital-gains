@@ -78,9 +78,9 @@ def test_calc_no_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
 ANET-2018
 [Total Gains = 6,970.00]
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |      ACB |   outlays |   capital gain/loss |
+| date       | description   | ticker   |   qty |   proceeds |      ACB |   outlays |   capital gain/loss |
 |------------+---------------+----------+-------+------------+----------+-----------+---------------------|
-| 2018-02-20 | RSU VEST      | ANET     | 50    |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
+| 2018-02-20 | RSU VEST      | ANET     |    50 |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
 
 GOOGL-2018
@@ -104,9 +104,9 @@ def test_calc_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
 ANET-2018
 [Total Gains = 6,970.00]
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |      ACB |   outlays |   capital gain/loss |
+| date       | description   | ticker   |   qty |   proceeds |      ACB |   outlays |   capital gain/loss |
 |------------+---------------+----------+-------+------------+----------+-----------+---------------------|
-| 2018-02-20 | RSU VEST      | ANET     | 50    |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
+| 2018-02-20 | RSU VEST      | ANET     |    50 |  12,000.00 | 5,010.00 |     20.00 |            6,970.00 |
 +------------+---------------+----------+-------+------------+----------+-----------+---------------------+
 
 """  # noqa: E501
