@@ -28,7 +28,10 @@ def _get_total_gains(transactions):
 def _get_map_of_currencies_to_exchange_rates(transactions):
     """First, split the list of transactions into sublists where each sublist
     will only contain transactions with the same currency"""
-    currency_groups = [list(g) for _, g in groupby(transactions,
+
+    contiguous_currencies = sorted(transactions.transactions,
+                                   key=lambda t: t.currency)
+    currency_groups = [list(g) for _, g in groupby(contiguous_currencies,
                                                    lambda t: t.currency)]
     currencies_to_exchange_rates = dict()
     # Create a separate ExchangeRate object for each currency
