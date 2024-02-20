@@ -12,8 +12,7 @@ class TickerGains:
     def add_transactions(self, transactions, exchange_rates):
         """Adds all transactions and updates the calculated values"""
         for t in transactions:
-            rate = exchange_rates[t.currency].get_rate(t.date)
-            t.exchange_rate = rate
+            t.add_rate(exchange_rates)
             self._add_transaction(t)
             if self._is_superficial_loss(t, transactions):
                 self._total_acb -= t.capital_gain

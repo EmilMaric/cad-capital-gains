@@ -110,3 +110,7 @@ class Transaction:
     def set_superficial_loss(self):
         self.superficial_loss = True
         self.capital_gain = Decimal(0.0)
+
+    def add_rate(self, exchange_rates):
+        rate = exchange_rates[self.currency].get_rate(self.date)
+        self.exchange_rate = rate
