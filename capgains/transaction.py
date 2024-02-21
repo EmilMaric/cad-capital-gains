@@ -122,4 +122,4 @@ class Transaction:
 
     @cumulative_cost.setter
     def cumulative_cost(self, cumulative_cost):
-        self._cumulative_cost = Decimal(cumulative_cost)    
+        self._cumulative_cost = Decimal(cumulative_cost)

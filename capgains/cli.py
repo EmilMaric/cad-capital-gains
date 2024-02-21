@@ -35,6 +35,7 @@ def calc(transactions_csv, year, tickers):
     transactions = TransactionsReader.get_transactions(transactions_csv)
     capgains_calc(transactions, year, tickers=tickers)
 
+
 @capgains.command(help=("Calculates costs from the transactions "
                         "CSV-file and displays output in a tabular format. "
                         "Filters can be applied to select which stocks to "

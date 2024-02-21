@@ -38,8 +38,8 @@ def _get_map_of_currencies_to_exchange_rates(transactions):
 
 
 def _add_rates(transactions, exchange_rates):
-        for t in transactions:
-            t.add_rate(exchange_rates)
+    for t in transactions:
+        t.add_rate(exchange_rates)
 
 
 def capgains_show(transactions, show_exchange_rate, tickers=None):
@@ -53,11 +53,11 @@ def capgains_show(transactions, show_exchange_rate, tickers=None):
     headers = None
     rows = None
     if show_exchange_rate:
-        er_map = _get_map_of_currencies_to_exchange_rates(filtered_transactions)
+        er_map = _get_map_of_currencies_to_exchange_rates(filtered_transactions)  # noqa: E501
         _add_rates(filtered_transactions, er_map)
 
         headers = ["date", "description", "ticker", "action", "qty", "price",
-                "commission", "currency", "exchange"]
+                   "commission", "currency", "exchange"]
         rows = [[
             t.date,
             t.description,
@@ -72,7 +72,7 @@ def capgains_show(transactions, show_exchange_rate, tickers=None):
 
     else:
         headers = ["date", "description", "ticker", "action", "qty", "price",
-                "commission", "currency"]
+                   "commission", "currency"]
         rows = [[
             t.date,
             t.description,

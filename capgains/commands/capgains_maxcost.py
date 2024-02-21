@@ -1,5 +1,4 @@
 import click
-import tabulate
 from itertools import groupby
 
 from capgains.exchange_rate import ExchangeRate
@@ -21,13 +20,14 @@ def _get_max_cost(transactions, year, year_min):
         max_cost = max(max_cost, t.cumulative_cost)
 
     # check against end of last year
-    max_cost = max(max_cost, _get_year_end_cost(transactions, year-1, year_min))
+    max_cost = max(max_cost, _get_year_end_cost(transactions, year-1, year_min))  # noqa: E501
 
     return max_cost
 
+
 def _get_year_end_cost(transactions, year, year_min):
     transactions_to_report = transactions.filter_by(year=year)
-    
+
     # if none this year, return last year
     if not transactions_to_report:
 
@@ -37,7 +37,7 @@ def _get_year_end_cost(transactions, year, year_min):
 
         return _get_year_end_cost(transactions, year-1, year_min)
 
-    return transactions_to_report[len(transactions_to_report)-1].cumulative_cost
+    return transactions_to_report[len(transactions_to_report)-1].cumulative_cost  # noqa: E501
 
 
 def _get_map_of_currencies_to_exchange_rates(transactions):
@@ -83,8 +83,8 @@ def capgains_maxcost(transactions, year, tickers=None):
             click.echo("Nothing to report\n")
             continue
 
-        max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)
-        year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)
+        max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)  # noqa: E501
+        year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)  # noqa: E501
 
         click.echo("[Max cost = {0:,.2f}]".format(max_cost))
         click.echo("[Year end = {0:,.2f}]".format(year_end_cost))
