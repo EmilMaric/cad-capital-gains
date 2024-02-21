@@ -4,6 +4,8 @@ class Transactions:
     def __init__(self, transactions):
         self._transactions = list()
         self._tickers = dict()
+        self._year_min = 9999
+        self._year_max = 0
         for transaction in transactions:
             self.add_transaction(transaction)
 
@@ -34,6 +36,10 @@ class Transactions:
         ticker_refcount += 1
         self._tickers[transaction.ticker] = ticker_refcount
 
+        year = transaction.date.year
+        self._year_min = min(self._year_min, year)
+        self._year_max = min(self._year_max, year)
+
     def filter_by(self, tickers=None, year=None, max_year=None, action=None,
                   superficial_loss=None):
         """Filter the list of stored transactions on certain parameters (such
@@ -56,3 +62,11 @@ class Transactions:
                 keep &= (t.superficial_loss == superficial_loss)
             return keep
         return Transactions(filter(lambda_filter, self.transactions))
+
+    @property
+    def year_min(self):
+        return self._year_min
+
+    @property
+    def year_max(self):
+        return self._year_max

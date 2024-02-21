@@ -70,3 +70,5 @@ class TickerGains:
         transaction.proceeds = proceeds
         transaction.capital_gain = capital_gain
         transaction.acb = acb
+
+        transaction.cumulative_cost = self._total_acb
