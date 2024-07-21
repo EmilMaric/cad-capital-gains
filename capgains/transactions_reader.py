@@ -23,13 +23,16 @@ class TransactionsReader:
     ]
 
     @classmethod
-    def get_transactions(cls, csv_file):
+    def get_transactions(cls, csv_file, reverse):
         """Convert the CSV-file entries into a list of Transactions."""
         transactions = []
         try:
             with open(csv_file, newline='') as f:
                 reader = csv.reader(f)
                 last_date = None
+                if reverse:
+                    reader = list(reader)
+                    reader.reverse()
                 for entry_no, entry in enumerate(reader):
                     actual_num_columns = len(entry)
                     expected_num_columns = len(cls.columns)

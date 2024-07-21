@@ -16,8 +16,9 @@ def capgains():
 @click.argument('transactions-csv')
 @click.option('-t', '--tickers', metavar='TICKERS',
               multiple=True, help="Stocks tickers to filter for")
-def show(transactions_csv, tickers):
-    transactions = TransactionsReader.get_transactions(transactions_csv)
+@click.option('--reverse/--no-reverse', default=False)
+def show(transactions_csv, tickers, reverse):
+    transactions = TransactionsReader.get_transactions(transactions_csv, reverse)
     capgains_show(transactions, tickers)
 
 
@@ -29,6 +30,7 @@ def show(transactions_csv, tickers):
 @click.argument('year', type=click.INT)
 @click.option('-t', '--tickers', metavar='TICKERS',
               multiple=True, help="Stocks tickers to filter for")
-def calc(transactions_csv, year, tickers):
-    transactions = TransactionsReader.get_transactions(transactions_csv)
+@click.option('--reverse/--no-reverse', default=False)
+def calc(transactions_csv, year, tickers, reverse):
+    transactions = TransactionsReader.get_transactions(transactions_csv, reverse)
     capgains_calc(transactions, year, tickers=tickers)
