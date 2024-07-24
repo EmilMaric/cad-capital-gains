@@ -4,6 +4,8 @@ python:
 before_install:
   - pip install poetry
   - pip install codecov
+  - pip uninstall -y urllib3
+  - pip install urllib3==1.26.6
 install:
   - poetry install -v
   - pip install tox-travis
