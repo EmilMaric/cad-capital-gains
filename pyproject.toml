@@ -34,18 +34,17 @@ keywords = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 click = "^7.1.2"
 tabulate = "^0.8.7"
 requests = "^2.23.0"
-urllib3 = "1.26.6"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^8.3.1"
 tox = "^3.15.0"
 requests-mock = "^1.8.0"
 flake8 = "^3.8.3"
-pytest-cov = "^2.10.1"
+pytest-cov = "^5.0.0"
 
 [tool.poetry.scripts]
 capgains = "capgains.cli:capgains"

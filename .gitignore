@@ -15,3 +15,6 @@
 
 # Mac
 .DS_Store*
+
+# Build folder
+dist/
