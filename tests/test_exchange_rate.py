@@ -83,8 +83,8 @@ def test_exchange_rate_after_max_date():
     tmr = today + timedelta(days=1)
     with pytest.raises(ClickException) as excinfo:
         ExchangeRate('USD', today, tmr)
-    assert(excinfo.value.message ==
-           "We do not support having transactions past today's date")
+    assert (excinfo.value.message ==
+            "We do not support having transactions past today's date")
 
 
 def test_exchange_rate_ok_date(USD_exchange_rates_mock):
