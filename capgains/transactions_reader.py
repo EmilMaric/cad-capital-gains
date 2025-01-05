@@ -34,11 +34,18 @@ class TransactionsReader:
                     reader = list(reader)
                     reader.reverse()
                 for entry_no, entry in enumerate(reader):
+                    # Skip lines that start with #, they are comments.
+                    # Skip empty lines
+                    if (len(entry) > 0 and entry[0].startswith("#")) or \
+                       (len(entry) == 0):
+                        continue
                     actual_num_columns = len(entry)
                     expected_num_columns = len(cls.columns)
                     if actual_num_columns != expected_num_columns:
                         # Each line in the CSV file should have the same number
                         # of columns as we expect
+                        if reverse:
+                            entry_no = len(reader)-entry_no
                         raise ClickException(
                             "Transaction entry {}: expected {} columns, entry has {}"  # noqa: E501
                             .format(entry_no,
