@@ -23,7 +23,7 @@ class TransactionsReader:
     ]
 
     @classmethod
-    def get_transactions(cls, csv_file, reverse):
+    def get_transactions(cls, csv_file, reverse=False):
         """Convert the CSV-file entries into a list of Transactions."""
         transactions = []
         try:
