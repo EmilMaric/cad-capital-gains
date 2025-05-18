@@ -30,7 +30,6 @@ def _get_year_end_cost(transactions, year, year_min):
 
     # if none this year, return last year
     if not transactions_to_report:
-
         # stop if we hit floor of years to check against
         if year <= year_min:
             return 0
@@ -87,4 +86,4 @@ def capgains_maxcost(transactions, year, tickers=None):
         year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)  # noqa: E501
 
         click.echo("[Max cost = {0:,.2f}]".format(max_cost))
-        click.echo("[Year end = {0:,.2f}]".format(year_end_cost))
+        click.echo("[Year end = {0:,.2f}]\n".format(year_end_cost))

@@ -16,16 +16,16 @@ class ExchangeRate:
     noon_rate_forex_str = {'USD': 'IEXE0101'}
 
     def __init__(self, currency_from, start_date, end_date):
-        self._currency_from = currency_from
+        self._currency_from = currency_from.strip().strip('"\'')
         self._start_date = start_date
         self._end_date = end_date
         self._rates = dict()
 
-        if currency_from not in self.supported_currencies:
+        if self._currency_from not in self.supported_currencies:
             raise ClickException(
                 "Currency ({}) is not currently supported. The supported "
-                "currencies are {}" .format(currency_from,
-                                            self.supported_currencies))
+                "currencies are {}".format(self._currency_from,
+                                         self.supported_currencies))
 
         if end_date < start_date:
             raise ClickException(
@@ -38,7 +38,7 @@ class ExchangeRate:
             raise ClickException(
                 "We do not support having transactions past today's date")
 
-        if currency_from == self.currency_to:
+        if self._currency_from == self.currency_to:
             # Nothing to do if currencies are the same
             return
 

@@ -51,6 +51,28 @@ This command will:
 pip install cad-capgains
 ```
 
+## Try it with Sample Data
+The package includes a comprehensive sample dataset in `tests/sample.csv` that you can use to try out the tool. After installation, you can run:
+```bash
+# Show all transactions
+capgains show tests/sample.csv
+
+# Show specific stock transactions
+capgains show tests/sample.csv -t AAPL
+
+# Calculate capital gains for 2023
+capgains calc tests/sample.csv 2023
+
+# Check maximum cost for T1135 reporting
+capgains maxcost tests/sample.csv 2023
+```
+
+The sample data includes:
+- Multiple years of transactions (2022-2024)
+- Both USD and CAD stocks
+- Various transaction types (buys, sells, partial sells)
+- Multiple tickers (AAPL, GOOGL, TD.TO, etc.)
+
 ## Development Setup
 For development, you can use the provided setup script:
 ```bash
@@ -73,7 +95,10 @@ To start, create a CSV file that will contain all of your transactions. In the C
 ```csv
 <yyyy-mm-dd>,<description>,<stock_ticker>,<action(BUY/SELL)>,<quantity>,<price>,<commission>,<currency>
 ```
-Here is a sample CSV file:
+
+A comprehensive sample CSV file with various transaction scenarios (including both CAD and USD transactions, multiple tickers, and various transaction types) is available in the `tests/sample.csv` file. You can use this as a reference for formatting your own transaction file.
+
+Here is a simple example:
 ```csv
 # sample.csv
 2017-2-15,ESPP PURCHASE,GOOG,BUY,100,50.00,10.00,USD
@@ -86,44 +111,75 @@ dating from May 1, 2007 and onwards.**
 # Usage
 To show the CSV file in a nice tabular format you can run:
 ```bash
-$ capgains show sample.csv
-+------------+---------------+----------+----------+-------+---------+--------------+------------+
-| date       | description   | ticker   | action   |   qty |   price |   commission |   currency |
-|------------+---------------+----------+----------+-------+---------+--------------+------------|
-| 2017-02-15 | ESPP PURCHASE | GOOG     | BUY      |   100 |   50.00 |        10.00 |        USD |
-| 2017-05-20 | RSU VEST      | GOOG     | SELL     |    50 |   45.00 |         0.00 |        CAD |
-+------------+---------------+----------+----------+-------+---------+--------------+------------+
+$ capgains show tests/sample.csv
++------------+--------------------+----------+----------+-------+----------+--------------+------------+
+| date       | description        | ticker   | action   |   qty |    price |   commission |   currency |
+|------------+--------------------+----------+----------+-------+----------+--------------+------------|
+| 2022-01-15 | Initial Purchase   | AAPL     | BUY      |   100 |   142.50 |         9.99 |        USD |
+| 2022-02-10 | Buy Canadian Bank  | TD.TO    | BUY      |   150 |    78.25 |         9.99 |        CAD |
+| 2022-03-20 | Buy Tech           | GOOGL    | BUY      |    20 | 2,200.00 |         9.99 |        USD |
+| 2022-04-15 | Buy ETF            | VFV.TO   | BUY      |   200 |    92.50 |         9.99 |        CAD |
+| 2022-05-01 | Partial Sell       | AAPL     | SELL     |    30 |   165.00 |         9.99 |        USD |
++------------+--------------------+----------+----------+-------+----------+--------------+------------+
 ```
 To calculate the capital gains you can run:
 ```bash
-$ capgains calc sample.csv 2017
-GOOG-2017
-[Total Gains = -1,028.54]
-+------------+---------------+----------+-------+------------+----------+-----------+---------------------+
-| date       | description   | ticker   | qty   |   proceeds |      ACB |   outlays |   capital gain/loss |
-|------------+---------------+----------+-------+------------+----------+-----------+---------------------|
-| 2017-05-20 | RSU VEST      | GOOG     | 50    |   2,250.00 | 3,278.54 |      0.00 |           -1,028.54 |
-+------------+---------------+----------+-------+------------+----------+-----------+---------------------+
+$ capgains calc tests/sample.csv 2023
+AAPL-2023
+[Total Gains = 4,714.97]
++------------+--------------------+----------+-------+------------+-----------+-----------+---------------------+
+| date       | description        | ticker   |   qty |   proceeds |       ACB |   outlays |   capital gain/loss |
+|------------+--------------------+----------+-------+------------+-----------+-----------+---------------------|
+| 2023-07-15 | Partial Sell Apple | AAPL     |    60 |  14,257.41 | 12,130.99 |     13.17 |            2,113.26 |
+| 2023-12-15 | Year End Rebalance | AAPL     |    40 |  10,702.40 |  8,087.33 |     13.36 |            2,601.71 |
++------------+--------------------+----------+-------+------------+-----------+-----------+---------------------+
+
+GOOGL-2023
+[Total Gains = 13,565.43]
++------------+---------------+----------+-------+------------+-----------+-----------+---------------------+
+| date       | description   | ticker   |   qty |   proceeds |       ACB |   outlays |   capital gain/loss |
+|------------+---------------+----------+-------+------------+-----------+-----------+---------------------|
+| 2023-02-15 | Sell Tech     | GOOGL    |    15 |  52,302.90 | 46,200.25 |     13.40 |            6,089.25 |
+| 2023-11-15 | Tech Profit   | GOOGL    |    10 |  38,290.00 | 30,800.17 |     13.66 |            7,476.17 |
++------------+---------------+----------+-------+------------+-----------+-----------+---------------------+
 ```
 Your CSV file can contain transactions spanning across multiple different tickers. You can filter the above commands by running the following:
 ```bash
-$ capgains calc sample.csv 2017 -t GOOG
+$ capgains calc tests/sample.csv 2023 -t AAPL
 ...
 
-$ capgains show sample.csv -t GOOG
+$ capgains show tests/sample.csv -t AAPL
 ...
 ```
 
 To calculate the maximum cost of your foreign securities for T1135 reporting:
 ```bash
-$ capgains maxcost sample.csv 2023
-GOOG-2023 Maximum Cost
-+------------+-----------+------------+
-| ticker     | currency  | max cost   |
-|------------+-----------+------------|
-| GOOG       | USD      | 5,010.00   |
-+------------+-----------+------------+
-Maximum cost in CAD: 6,762.51
+$ capgains maxcost tests/sample.csv 2023
+AAPL-2023
+[Max cost = 46,502.12]
+[Year end = 26,283.81]
+
+GOOGL-2023
+[Max cost = 154,000.83]
+[Year end = 77,000.41]
+
+MSFT-2023
+Nothing to report
+
+RY.TO-2023
+[Max cost = 31,732.48]
+[Year end = 21,578.09]
+
+SHOP.TO-2023
+Nothing to report
+
+TD.TO-2023
+[Max cost = 24,341.65]
+[Year end = 18,256.24]
+
+VFV.TO-2023
+[Max cost = 38,218.30]
+[Year end = 33,441.02]
 ```
 
 For additional commands and options, run one of the following:

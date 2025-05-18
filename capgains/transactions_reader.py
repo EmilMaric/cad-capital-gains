@@ -31,6 +31,9 @@ class TransactionsReader:
                 reader = csv.reader(f)
                 last_date = None
                 for entry_no, entry in enumerate(reader):
+                    # Strip whitespace from all fields
+                    entry = [field.strip() for field in entry]
+                    
                     actual_num_columns = len(entry)
                     expected_num_columns = len(cls.columns)
                     if actual_num_columns != expected_num_columns:
