@@ -9,6 +9,18 @@ Below is a small guide for getting your environment set up and running/testing t
 poetry install
 ```
 
+## Code Style
+We follow PEP 8 style guidelines. You can automatically fix formatting issues using yapf:
+```bash
+# Fix formatting issues according to the style defined in pyproject.toml
+poetry run yapf --in-place --recursive --parallel -vv .
+```
+
+Then run flake8 to check for any remaining style issues:
+```bash
+poetry run flake8
+```
+
 ## Running tests manually
 We have a Travis CI setup that will run the test suite, perfrom python linting, and verify the code has full testing coverage for every commit you push. It will perform these checks for every python version that we support, and your code will need to pass all these checks in order to get merged in. You can also running these checks manually before you push your code out as well:
 ```bash

@@ -62,10 +62,11 @@ def transactions():
 def exchange_rates_mock(requests_mock, transactions):
     observations = []
     for transaction in transactions:
-        observations.append({
-            'd': transaction.date.isoformat(),
-            'FXUSDCAD': {
-                'v': '2.0'
+        observations.append(
+            {
+                'd': transaction.date.isoformat(), 'FXUSDCAD': {
+                    'v': '2.0'
+                }
             }
-        })
+        )
     requests_mock.get(rm.ANY, json={"observations": observations})

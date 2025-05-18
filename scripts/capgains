@@ -1,0 +1,4 @@
+#!/bin/bash
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." &> /dev/null && pwd )"
+PYTHONPATH="$PROJECT_ROOT" poetry run python -m capgains.cli "$@" 

@@ -8,8 +8,8 @@ from capgains.transaction import Transaction
 
 
 def test_superficial_loss_no_purchase_after_loss(exchange_rates_mock):
-    """Testing if transaction is marked as a superficial loss even if
-    there are no purchases made after the loss"""
+    """Testing if transaction is marked as a superficial loss even if there are
+    no purchases made after the loss."""
     transactions = [
         Transaction(
             date(2018, 1, 1),
@@ -33,8 +33,7 @@ def test_superficial_loss_no_purchase_after_loss(exchange_rates_mock):
         )
     ]
     tg = TickerGains(transactions[0].ticker)
-    er = ExchangeRate('USD', transactions[0].date,
-                      transactions[1].date)
+    er = ExchangeRate('USD', transactions[0].date, transactions[1].date)
     er_map = {'USD': er}
     tg.add_transactions(transactions, er_map)
     assert transactions[1].superficial_loss
@@ -42,8 +41,8 @@ def test_superficial_loss_no_purchase_after_loss(exchange_rates_mock):
 
 
 def test_superficial_loss_purchase_after_loss(exchange_rates_mock):
-    """Testing if transaction is marked as a superficial loss even if
-    there is a purchase made after the loss"""
+    """Testing if transaction is marked as a superficial loss even if there is
+    a purchase made after the loss."""
     transactions = [
         Transaction(
             date(2018, 1, 1),
@@ -77,8 +76,7 @@ def test_superficial_loss_purchase_after_loss(exchange_rates_mock):
         )
     ]
     tg = TickerGains(transactions[0].ticker)
-    er = ExchangeRate('USD', transactions[0].date,
-                      transactions[1].date)
+    er = ExchangeRate('USD', transactions[0].date, transactions[1].date)
     er_map = {'USD': er}
     tg.add_transactions(transactions, er_map)
     assert transactions[1].superficial_loss
@@ -86,8 +84,8 @@ def test_superficial_loss_purchase_after_loss(exchange_rates_mock):
 
 
 def test_loss_no_balance_after_window(exchange_rates_mock):
-    """Testing if transaction is not marked as a superficial loss if
-    there is no share balance 30 days after the loss"""
+    """Testing if transaction is not marked as a superficial loss if there is
+    no share balance 30 days after the loss."""
     transactions = [
         Transaction(
             date(2018, 1, 1),
@@ -131,8 +129,7 @@ def test_loss_no_balance_after_window(exchange_rates_mock):
         )
     ]
     tg = TickerGains(transactions[0].ticker)
-    er = ExchangeRate('USD', transactions[0].date,
-                      transactions[1].date)
+    er = ExchangeRate('USD', transactions[0].date, transactions[1].date)
     er_map = {'USD': er}
     tg.add_transactions(transactions, er_map)
     assert not transactions[1].superficial_loss
@@ -140,8 +137,8 @@ def test_loss_no_balance_after_window(exchange_rates_mock):
 
 
 def test_loss_no_purchase_in_window(exchange_rates_mock):
-    """Testing if transaction is not marked as a superficial loss if
-    there are are no purchases made in the 61 day window"""
+    """Testing if transaction is not marked as a superficial loss if there are
+    are no purchases made in the 61 day window."""
     transactions = [
         Transaction(
             date(2018, 1, 1),
@@ -175,8 +172,7 @@ def test_loss_no_purchase_in_window(exchange_rates_mock):
         )
     ]
     tg = TickerGains(transactions[0].ticker)
-    er = ExchangeRate('USD', transactions[0].date,
-                      transactions[1].date)
+    er = ExchangeRate('USD', transactions[0].date, transactions[1].date)
     er_map = {'USD': er}
     tg.add_transactions(transactions, er_map)
     assert not transactions[1].superficial_loss
@@ -184,8 +180,8 @@ def test_loss_no_purchase_in_window(exchange_rates_mock):
 
 
 def test_gain_not_marked_as_superficial_loss(exchange_rates_mock):
-    """Testing if transaction is not marked as a superficial loss if
-    it does not result in a loss"""
+    """Testing if transaction is not marked as a superficial loss if it does
+    not result in a loss."""
     transactions = [
         Transaction(
             date(2018, 1, 1),
@@ -209,8 +205,7 @@ def test_gain_not_marked_as_superficial_loss(exchange_rates_mock):
         )
     ]
     tg = TickerGains(transactions[0].ticker)
-    er = ExchangeRate('USD', transactions[0].date,
-                      transactions[1].date)
+    er = ExchangeRate('USD', transactions[0].date, transactions[1].date)
     er_map = {'USD': er}
     tg.add_transactions(transactions, er_map)
     assert not transactions[1].superficial_loss
@@ -218,12 +213,11 @@ def test_gain_not_marked_as_superficial_loss(exchange_rates_mock):
 
 
 def test_ticker_gains_negative_balance(transactions, exchange_rates_mock):
-    """If the first transaction added is a sell, it is illegal since
-    this causes a negative balance, which is impossible"""
+    """If the first transaction added is a sell, it is illegal since this
+    causes a negative balance, which is impossible."""
     sell_transaction = transactions[2]
     tg = TickerGains(sell_transaction.ticker)
-    er = ExchangeRate('USD', transactions[2].date,
-                      transactions[2].date)
+    er = ExchangeRate('USD', transactions[2].date, transactions[2].date)
     er_map = {'USD': er}
     with pytest.raises(ClickException) as excinfo:
         tg.add_transactions([sell_transaction], er_map)
@@ -238,9 +232,7 @@ def test_ticker_gains_ok(transactions, exchange_rates_mock):
     # Add first transaction - 'BUY'
     # Add second transaction - 'BUY'
     # Add third transaction - 'SELL'
-    transactions_to_test = [transactions[0],
-                            transactions[2],
-                            transactions[3]]
+    transactions_to_test = [transactions[0], transactions[2], transactions[3]]
 
     tg.add_transactions(transactions_to_test, er_map)
     assert transactions[0].exchange_rate == 2.0

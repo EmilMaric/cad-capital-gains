@@ -1,6 +1,6 @@
 import requests
 from datetime import date, timedelta, datetime
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from click import ClickException
 
 
@@ -15,30 +15,44 @@ class ExchangeRate:
     supported_currencies = ['CAD', 'USD']
     noon_rate_forex_str = {'USD': 'IEXE0101'}
 
+    @staticmethod
+    def get_exchange_rate(target_date):
+        """Get the exchange rate for a single date.
+
+        This is a convenience method for getting a single exchange rate
+        without having to create an instance.
+        """
+        er = ExchangeRate('USD', target_date, target_date)
+        return er.get_rate(target_date)
+
     def __init__(self, currency_from, start_date, end_date):
-        self._currency_from = currency_from
+        self._currency_from = currency_from.strip().strip('"\'')
         self._start_date = start_date
         self._end_date = end_date
         self._rates = dict()
 
-        if currency_from not in self.supported_currencies:
+        if self._currency_from not in self.supported_currencies:
             raise ClickException(
                 "Currency ({}) is not currently supported. The supported "
-                "currencies are {}" .format(currency_from,
-                                            self.supported_currencies))
+                "currencies are {}".format(
+                    self._currency_from, self.supported_currencies
+                )
+            )
 
         if end_date < start_date:
-            raise ClickException(
-                "End date must be after start date")
+            raise ClickException("End date must be after start date")
         if start_date < self.noon_rate_min_date:
             raise ClickException(
-                "We do not support having transactions before {}"
-                .format(self.noon_rate_min_date.isoformat()))
+                "We do not support having transactions before {}".format(
+                    self.noon_rate_min_date.isoformat()
+                )
+            )
         if end_date > datetime.today().date():
             raise ClickException(
-                "We do not support having transactions past today's date")
+                "We do not support having transactions past today's date"
+            )
 
-        if currency_from == self.currency_to:
+        if self._currency_from == self.currency_to:
             # Nothing to do if currencies are the same
             return
 
@@ -48,48 +62,68 @@ class ExchangeRate:
         self._rates.update(indicative_rates)
 
     def _fetch_rates(self, start_date, end_date, forex_str):
-        """Fetch exchange rates from the supplied URL"""
+        """Fetch exchange rates from the supplied URL."""
         rates = {}
         # Always move the start date back 7 days in case the start
         # date, end date, and all days in between are all weekends/holidays
         # where no exchange rate can be found
         start_date -= timedelta(days=7)
-        params = {"start_date": start_date.isoformat(),
-                  "end_date": end_date.isoformat()}
+        params = {
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat()
+        }
         url = "{}/{}/json".format(self.valet_obs_url, forex_str)
         response = None
         try:
             response = requests.get(url=url, params=params)
+            rates_json = response.json()[self.observations]
         except requests.ConnectionError as e:
             raise ClickException(
-                "Error with internet connection to URL {} : {}".format(url, e))
+                "Error with internet connection to URL {} : {}".format(url, e)
+            )
         except requests.HTTPError as e:
             raise ClickException(
-                "HTTP request for URL {} was unsuccessful : {}".format(url, e))
+                "HTTP request for URL {} was unsuccessful : {}".format(url, e)
+            )
         except requests.exceptions.Timeout as e:
             raise ClickException(
-                "Request timeout on URL {} : {}".format(url, e))
+                "Request timeout on URL {} : {}".format(url, e)
+            )
         except requests.exceptions.TooManyRedirects as e:
+            raise ClickException("URL {} was bad : {}".format(url, e))
+        except (requests.exceptions.RequestException,
+                requests.exceptions.JSONDecodeError):
             raise ClickException(
-                "URL {} was bad : {}".format(url, e))
-        except requests.exceptions.RequestException as e:
-            raise ClickException(
-                "Catastrophic error with URL {} : {}".format(url, e))
-        try:
-            rates_json = response.json()[self.observations]
+                "Error retrieving exchange rate from Bank of Canada API"
+            )
         except KeyError:
             raise ClickException(
-                "No observations were found using currency {}"
-                .format(self._currency_from))
-        for day_rate in rates_json:
-            date_str = day_rate[self.date]
-            date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            rate = Decimal(day_rate[forex_str][self.value])
-            rates[date] = rate
+                "No observations were found using currency {}".format(
+                    self._currency_from
+                )
+            )
+
+        try:
+            for day_rate in rates_json:
+                date_str = day_rate[self.date]
+                try:
+                    date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    msg = "Error parsing exchange rate from Bank of Canada API"
+                    raise ClickException(msg)
+                try:
+                    rate = Decimal(day_rate[forex_str][self.value])
+                except (KeyError, InvalidOperation):
+                    msg = "Error parsing exchange rate from Bank of Canada API"
+                    raise ClickException(msg)
+                rates[date] = rate
+        except Exception:
+            msg = "Error parsing exchange rate from Bank of Canada API"
+            raise ClickException(msg)
         return rates
 
     def _fetch_noon_rates(self, start_date, end_date):
-        """Get the historical noon rates from the Bank of Canada"""
+        """Get the historical noon rates from the Bank of Canada."""
         if start_date >= self.indicative_rate_min_date:
             # No available noon dates for this date range
             return {}
@@ -101,7 +135,7 @@ class ExchangeRate:
         return self._fetch_rates(start_date, end_date, forex_str)
 
     def _fetch_indicative_rates(self, start_date, end_date):
-        """Get the indicative rates from the Bank of Canada"""
+        """Get the indicative rates from the Bank of Canada."""
         if end_date < self.indicative_rate_min_date:
             # No available indicative rates for this date range
             return {}
@@ -114,8 +148,7 @@ class ExchangeRate:
 
     def _get_closest_rate_for_day(self, date):
         """Gets the exchange rate for the closest preceeding date with a
-        rate
-        """
+        rate."""
         if date in self._rates:
             return self._rates[date]
         dates_preceeding = [d for d in self._rates if d < date]
@@ -137,5 +170,6 @@ class ExchangeRate:
             rate = self._get_closest_rate_for_day(date)
         if not rate:
             raise ClickException(
-                "Unable to find exchange rate on {}".format(date))
+                f"Could not find exchange rate for {date}. No rates available."
+            )
         return rate

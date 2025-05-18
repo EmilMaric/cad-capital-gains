@@ -2,10 +2,19 @@ from decimal import Decimal
 
 
 class Transaction:
-    """Represents a transaction entry from the CSV-file"""
+    """Represents a transaction entry from the CSV-file."""
 
-    def __init__(self, date, description, ticker, action, qty, price,
-                 commission, currency):
+    def __init__(
+        self,
+        date,
+        description,
+        ticker,
+        action,
+        qty,
+        price,
+        commission,
+        currency
+    ):
         self._date = date
         self._description = description
         self._ticker = ticker
@@ -20,6 +29,7 @@ class Transaction:
         self._capital_gain = Decimal(0.0)
         self._acb = Decimal(0.0)
         self._superficial_loss = False
+        self._cumulative_cost = Decimal(0.0)
 
     @property
     def date(self):
@@ -110,3 +120,15 @@ class Transaction:
     def set_superficial_loss(self):
         self.superficial_loss = True
         self.capital_gain = Decimal(0.0)
+
+    def add_rate(self, exchange_rates):
+        rate = exchange_rates[self.currency].get_rate(self.date)
+        self.exchange_rate = rate
+
+    @property
+    def cumulative_cost(self):
+        return self._cumulative_cost
+
+    @cumulative_cost.setter
+    def cumulative_cost(self, cumulative_cost):
+        self._cumulative_cost = Decimal(cumulative_cost)

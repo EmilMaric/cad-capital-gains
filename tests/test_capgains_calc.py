@@ -7,7 +7,7 @@ from capgains.transactions import Transactions
 
 
 def test_no_ticker(transactions, capfd, exchange_rates_mock):
-    """Testing capgains_calc without any optional filters"""
+    """Testing capgains_calc without any optional filters."""
     CapGainsCalc.capgains_calc(transactions, 2018)
     out, _ = capfd.readouterr()
     assert out == """\
@@ -26,7 +26,7 @@ No capital gains
 
 
 def test_tickers(transactions, capfd, exchange_rates_mock):
-    """Testing capgains_calc with a ticker"""
+    """Testing capgains_calc with a ticker."""
     CapGainsCalc.capgains_calc(transactions, 2018, ['ANET'])
     out, _ = capfd.readouterr()
     assert out == """\
@@ -42,7 +42,7 @@ ANET-2018
 
 
 def test_no_transactions(capfd):
-    """Testing capgains_calc without any transactions"""
+    """Testing capgains_calc without any transactions."""
     CapGainsCalc.capgains_calc(Transactions([]), 2018)
     out, _ = capfd.readouterr()
     assert out == """\
@@ -51,7 +51,7 @@ No transactions available
 
 
 def test_unknown_year(transactions, capfd, exchange_rates_mock):
-    """Testing capgains_calc with a year matching no transactions"""
+    """Testing capgains_calc with a year matching no transactions."""
     CapGainsCalc.capgains_calc(transactions, 1998)
     out, _ = capfd.readouterr()
     assert out == """\
@@ -65,7 +65,7 @@ No capital gains
 
 
 def test_superficial_loss_not_displayed(capfd, exchange_rates_mock):
-    """Testing capgains_calc with a superficial loss transaction"""
+    """Testing capgains_calc with a superficial loss transaction."""
     transactions = [
         Transaction(
             date(2018, 1, 1),
@@ -114,36 +114,29 @@ ANET-2018
 
 
 def test_calc_mixed_currencies(capfd, requests_mock):
-    """Testing capgains_calc with mixed currencies"""
+    """Testing capgains_calc with mixed currencies."""
     usd_transaction = Transaction(
-            date(2017, 2, 15),
-            'ESPP PURCHASE',
-            'ANET',
-            'BUY',
-            100,
-            50.00,
-            0.00,
-            'USD')
+        date(2017, 2, 15),
+        'ESPP PURCHASE',
+        'ANET',
+        'BUY',
+        100,
+        50.00,
+        0.00,
+        'USD'
+    )
     cad_transaction = Transaction(
-            date(2018, 2, 20),
-            'RSU VEST',
-            'ANET',
-            'SELL',
-            100,
-            50.00,
-            0.00,
-            'CAD')
-    transactions = Transactions([
-        usd_transaction,
-        cad_transaction
-    ])
+        date(2018, 2, 20), 'RSU VEST', 'ANET', 'SELL', 100, 50.00, 0.00, 'CAD'
+    )
+    transactions = Transactions([usd_transaction, cad_transaction])
 
-    usd_observations = [{
-        'd': usd_transaction.date.isoformat(),
-        'FXUSDCAD': {
-            'v': '2.0'
+    usd_observations = [
+        {
+            'd': usd_transaction.date.isoformat(), 'FXUSDCAD': {
+                'v': '2.0'
+            }
         }
-    }]
+    ]
     requests_mock.get(rm.ANY, json={"observations": usd_observations})
     CapGainsCalc.capgains_calc(transactions, 2018)
     out, _ = capfd.readouterr()
@@ -160,7 +153,7 @@ ANET-2018
 
 
 def test_partial_shares(capfd, requests_mock):
-    """Testing capgains_calc with partial shares"""
+    """Testing capgains_calc with partial shares."""
     partial_buy = Transaction(
         date(2017, 2, 15),
         'ESPP PURCHASE',
@@ -169,7 +162,8 @@ def test_partial_shares(capfd, requests_mock):
         0.5,
         50.00,
         0.00,
-        'CAD')
+        'CAD'
+    )
     partial_sell = Transaction(
         date(2018, 2, 20),
         'RSU VEST',
@@ -178,11 +172,9 @@ def test_partial_shares(capfd, requests_mock):
         0.5,
         100.00,
         0.00,
-        'CAD')
-    transactions = Transactions([
-        partial_buy,
-        partial_sell
-    ])
+        'CAD'
+    )
+    transactions = Transactions([partial_buy, partial_sell])
 
     CapGainsCalc.capgains_calc(transactions, 2018)
     out, _ = capfd.readouterr()
