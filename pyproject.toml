@@ -91,11 +91,13 @@ i18n_function_call = ["fmt.format"]
 
 [tool.yapfignore]
 ignore_patterns = [
-  ".git/**/*",
-  "__pycache__/*",
-  "build/*",
-  "dist/*",
-  ".venv/**/*",
-  "*.egg-info"
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    "*.egg-info",
+    ".tox",
+    ".pytest_cache"
 ]
 
