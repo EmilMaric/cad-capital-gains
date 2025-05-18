@@ -47,3 +47,7 @@ def calc(transactions_csv, year, tickers):
 def maxcost(transactions_csv, year, tickers):
     transactions = TransactionsReader.get_transactions(transactions_csv)
     capgains_maxcost(transactions, year, tickers=tickers)
+
+
+if __name__ == '__main__':
+    capgains()
