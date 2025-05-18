@@ -43,11 +43,30 @@ This command will:
 - The tool considers both buying and selling activities throughout the year
 - If your maximum cost exceeds CAD $100,000, ensure you file form T1135 with your tax return to avoid penalties
 
-# Installation
+# Installation and Setup
+
+## Quick Install
 ```bash
 # To get the latest release
 pip install cad-capgains
 ```
+
+## Development Setup
+For development, you can use the provided setup script:
+```bash
+# Clone the repository
+git clone <repository-url>
+cd cad-capital-gains
+
+# Run the setup script
+source scripts/envsetup.sh
+```
+
+The setup script will:
+- Ensure pyenv is configured
+- Install Poetry if not present
+- Set up the development environment
+- Install all dependencies
 
 # CSV File Requirements
 To start, create a CSV file that will contain all of your transactions. In the CSV file, each line will represent a `BUY` or `SELL` transaction.  Your transactions **must be in order**, with the oldest transactions coming first, followed by newer transactions coming later. The format is as follows:

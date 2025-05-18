@@ -39,8 +39,8 @@ click = "^7.1.2"
 tabulate = "^0.8.7"
 requests = "^2.23.0"
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
 tox = "^3.15.0"
 requests-mock = "^1.8.0"
 flake8 = "^3.8.3"

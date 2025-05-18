@@ -1,17 +1,17 @@
-# Used for python versioning
-*.python-version
-
-# Used for python distributions
-*.egg-info
-
-# Used for local tox runs
-.tox/
-
-# Compiled python files
+# Python
+__pycache__/
 *.pyc
+*.egg-info/
 
-# Code coverage file
+# Testing
+.pytest_cache/
+.tox/
 .coverage*
 
-# Mac
-.DS_Store*
+# Environment
+.python-version
+.venv/
+
+# IDE/OS
+.vscode/
+.DS_Store
