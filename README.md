@@ -245,3 +245,9 @@ $ capgains show tests/sample.csv --format json
   ]
 }
 ```
+
+# Finding issues
+If you find issues using this tool, please create an Issue using the [Github issue tracker](https://github.com/EmilMaric/cad-capital-gains/issues) and one of us will try to fix it.
+
+# Contributing
+If you would like to contribute, please read the [CONTRIBUTING.md](https://github.com/EmilMaric/cad-capital-gains/blob/master/CONTRIBUTING.md) page
