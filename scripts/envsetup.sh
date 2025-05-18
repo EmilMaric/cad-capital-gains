@@ -9,17 +9,6 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "Setting up development environment..."
 
-# Setup pyenv
-if command -v pyenv &> /dev/null; then
-    echo "Configuring pyenv..."
-    export PYENV_ROOT="$HOME/.pyenv"
-    command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-else
-    echo "Warning: pyenv not found. Please install pyenv for better Python version management."
-fi
-
 # Add Poetry to PATH
 export PATH="$HOME/.local/bin:$PATH"
 

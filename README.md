@@ -104,10 +104,14 @@ source scripts/envsetup.sh
 ```
 
 The setup script will:
-- Ensure pyenv is configured
 - Install Poetry if not present
-- Set up the development environment
-- Install all dependencies
+- Configure Poetry to create virtual environments in the project directory
+- Install all project dependencies
+
+To run the tool during development, use the provided script:
+```bash
+./scripts/capgains calc tests/sample.csv 2023
+```
 
 # Input File Requirements
 The tool supports both CSV and JSON input formats for transaction data.
