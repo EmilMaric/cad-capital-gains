@@ -5,6 +5,7 @@ import json
 from decimal import Decimal
 
 from capgains.transaction import Transaction
+from capgains.transactions import Transactions
 from capgains.transactions_reader import TransactionsReader
 from tests.helpers import (
     create_csv_file, create_json_file, transactions_to_list
@@ -890,3 +891,42 @@ def test_csv_header_detection_with_transaction_date_field(tmp_path):
         "commission,currency"
     )
     assert expected_format in excinfo.value.message
+
+
+def test_year_tracking():
+    """Test that year_min and year_max are correctly tracked."""
+    transactions = [
+        Transaction(
+            date(2018, 1, 1),
+            'First',
+            'AAPL',
+            'BUY',
+            100,
+            50.00,
+            0.00,
+            'USD'
+        ),
+        Transaction(
+            date(2017, 6, 1),  # Earlier year
+            'Second',
+            'AAPL',
+            'BUY',
+            100,
+            50.00,
+            0.00,
+            'USD'
+        ),
+        Transaction(
+            date(2019, 12, 31),  # Later year
+            'Third',
+            'AAPL',
+            'SELL',
+            100,
+            50.00,
+            0.00,
+            'USD'
+        )
+    ]
+    txs = Transactions(transactions)
+    assert txs.year_min == 2017, "year_min should be earliest year (2017)"
+    assert txs.year_max == 2019, "year_max should be latest year (2019)"

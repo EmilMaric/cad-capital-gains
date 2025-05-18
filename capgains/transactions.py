@@ -38,7 +38,7 @@ class Transactions:
 
         year = transaction.date.year
         self._year_min = min(self._year_min, year)
-        self._year_max = min(self._year_max, year)
+        self._year_max = max(self._year_max, year)
 
     def filter_by(
         self,
