@@ -1,5 +1,5 @@
 class Transactions:
-    """Holds a collection of transactions"""
+    """Holds a collection of transactions."""
 
     def __init__(self, transactions):
         self._transactions = list()
@@ -11,7 +11,7 @@ class Transactions:
 
     @property
     def transactions(self):
-        """Return all the stored transactions"""
+        """Return all the stored transactions."""
         return self._transactions
 
     @property
@@ -40,12 +40,18 @@ class Transactions:
         self._year_min = min(self._year_min, year)
         self._year_max = min(self._year_max, year)
 
-    def filter_by(self, tickers=None, year=None, max_year=None, action=None,
-                  superficial_loss=None):
+    def filter_by(
+        self,
+        tickers=None,
+        year=None,
+        max_year=None,
+        action=None,
+        superficial_loss=None
+    ):
         """Filter the list of stored transactions on certain parameters (such
         as ticker, year, etc) and return only the transactions that match the
-        requested parameters.
-        """
+        requested parameters."""
+
         def lambda_filter(t):
             keep = True
             if tickers:
@@ -61,6 +67,7 @@ class Transactions:
                 # check that it is not set to None
                 keep &= (t.superficial_loss == superficial_loss)
             return keep
+
         return Transactions(filter(lambda_filter, self.transactions))
 
     @property

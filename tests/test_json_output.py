@@ -1,50 +1,27 @@
-import os
 import json
 from click.testing import CliRunner
 from datetime import date
-from decimal import Decimal
 
 from capgains.cli import capgains
-from capgains.transaction import Transaction
-from capgains.transactions import Transactions
+from tests.test_comprehensive_basic import setup_exchange_rates_mock
 
 
-def test_show_json_output():
-    """Test JSON output for show command"""
-    # Create test transactions
-    transactions = [
-        Transaction(
-            date(2022, 1, 15),
-            'Buy AAPL',
-            'AAPL',
-            'BUY',
-            100,
-            150.00,
-            9.99,
-            'USD'
-        ),
-        Transaction(
-            date(2022, 2, 15),
-            'Sell AAPL',
-            'AAPL',
-            'SELL',
-            50,
-            180.00,
-            9.99,
-            'USD'
-        )
-    ]
-
-    # Run command with JSON output
+def test_json_output(tmp_path, requests_mock):
     runner = CliRunner()
     with runner.isolated_filesystem():
-        # Write test data to CSV
+        setup_exchange_rates_mock(
+            requests_mock, date(2022, 1, 1), date(2022, 12, 31)
+        )
+
+        # Run command with JSON output
         with open('test.csv', 'w') as f:
             f.write('2022-01-15,Buy AAPL,AAPL,BUY,100,150.00,9.99,USD\n')
             f.write('2022-02-15,Sell AAPL,AAPL,SELL,50,180.00,9.99,USD\n')
 
         # Test without exchange rates
-        result = runner.invoke(capgains, ['show', 'test.csv', '--format', 'json'])
+        result = runner.invoke(
+            capgains, ['show', 'test.csv', '--format', 'json']
+        )
         assert result.exit_code == 0
 
         data = json.loads(result.output)
@@ -52,7 +29,9 @@ def test_show_json_output():
         assert len(data['transactions']) == 2
 
         # Test with exchange rates
-        result = runner.invoke(capgains, ['show', 'test.csv', '-e', '--format', 'json'])
+        result = runner.invoke(
+            capgains, ['show', 'test.csv', '-e', '--format', 'json']
+        )
         assert result.exit_code == 0
 
         data = json.loads(result.output)
@@ -62,7 +41,7 @@ def test_show_json_output():
 
 
 def test_calc_json_output():
-    """Test JSON output for calc command"""
+    """Test JSON output for calc command."""
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Write test data to CSV
@@ -70,7 +49,9 @@ def test_calc_json_output():
             f.write('2022-01-15,Buy AAPL,AAPL,BUY,100,150.00,9.99,USD\n')
             f.write('2022-02-15,Sell AAPL,AAPL,SELL,50,180.00,9.99,USD\n')
 
-        result = runner.invoke(capgains, ['calc', 'test.csv', '2022', '--format', 'json'])
+        result = runner.invoke(
+            capgains, ['calc', 'test.csv', '2022', '--format', 'json']
+        )
         assert result.exit_code == 0
 
         data = json.loads(result.output)
@@ -82,7 +63,7 @@ def test_calc_json_output():
 
 
 def test_maxcost_json_output():
-    """Test JSON output for maxcost command"""
+    """Test JSON output for maxcost command."""
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Write test data to CSV
@@ -90,7 +71,9 @@ def test_maxcost_json_output():
             f.write('2022-01-15,Buy AAPL,AAPL,BUY,100,150.00,9.99,USD\n')
             f.write('2022-02-15,Buy More AAPL,AAPL,BUY,50,180.00,9.99,USD\n')
 
-        result = runner.invoke(capgains, ['maxcost', 'test.csv', '2022', '--format', 'json'])
+        result = runner.invoke(
+            capgains, ['maxcost', 'test.csv', '2022', '--format', 'json']
+        )
         assert result.exit_code == 0
 
         data = json.loads(result.output)
@@ -102,7 +85,7 @@ def test_maxcost_json_output():
 
 
 def test_json_output_no_results():
-    """Test JSON output when no results are found"""
+    """Test JSON output when no results are found."""
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Write test data to CSV
@@ -110,19 +93,27 @@ def test_json_output_no_results():
             f.write('2022-01-15,Buy AAPL,AAPL,BUY,100,150.00,9.99,USD\n')
 
         # Test show command
-        result = runner.invoke(capgains, ['show', 'test.csv', '-t', 'MSFT', '--format', 'json'])
+        result = runner.invoke(
+            capgains, ['show', 'test.csv', '-t', 'MSFT', '--format', 'json']
+        )
         assert result.exit_code == 0
         data = json.loads(result.output)
         assert 'error' in data
 
         # Test calc command
-        result = runner.invoke(capgains, ['calc', 'test.csv', '2022', '-t', 'MSFT', '--format', 'json'])
+        result = runner.invoke(
+            capgains,
+            ['calc', 'test.csv', '2022', '-t', 'MSFT', '--format', 'json']
+        )
         assert result.exit_code == 0
         data = json.loads(result.output)
         assert 'error' in data
 
         # Test maxcost command
-        result = runner.invoke(capgains, ['maxcost', 'test.csv', '2022', '-t', 'MSFT', '--format', 'json'])
+        result = runner.invoke(
+            capgains,
+            ['maxcost', 'test.csv', '2022', '-t', 'MSFT', '--format', 'json']
+        )
         assert result.exit_code == 0
         data = json.loads(result.output)
-        assert 'error' in data 
+        assert 'error' in data

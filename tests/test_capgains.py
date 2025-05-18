@@ -5,9 +5,8 @@ from tests.helpers import create_csv_file, transactions_to_list
 
 
 def test_show_file_not_found(testfiles_dir):
-    """Testing the capgains show command with a file that doesn't exist"""
-    filepath = create_csv_file(testfiles_dir,
-                               "showdnetest.csv")
+    """Testing the capgains show command with a file that doesn't exist."""
+    filepath = create_csv_file(testfiles_dir, "showdnetest.csv")
 
     runner = CliRunner()
     result = runner.invoke(capgains, ['show', filepath])
@@ -19,11 +18,13 @@ Error: File not found: {}
 
 
 def test_show_no_ticker_arg(testfiles_dir, transactions):
-    """Testing the capgains show command providing no filtering argument"""
-    filepath = create_csv_file(testfiles_dir,
-                               "showtickertest.csv",
-                               transactions_to_list(transactions),
-                               True)
+    """Testing the capgains show command providing no filtering argument."""
+    filepath = create_csv_file(
+        testfiles_dir,
+        "showtickertest.csv",
+        transactions_to_list(transactions),
+        True
+    )
 
     runner = CliRunner()
     result = runner.invoke(capgains, ['show', filepath])
@@ -42,11 +43,13 @@ def test_show_no_ticker_arg(testfiles_dir, transactions):
 
 
 def test_show_ticker_arg(testfiles_dir, transactions):
-    """Testing the capgains show command with a ticker filter"""
-    filepath = create_csv_file(testfiles_dir,
-                               "showtickertest.csv",
-                               transactions_to_list(transactions),
-                               True)
+    """Testing the capgains show command with a ticker filter."""
+    filepath = create_csv_file(
+        testfiles_dir,
+        "showtickertest.csv",
+        transactions_to_list(transactions),
+        True
+    )
 
     runner = CliRunner()
     result = runner.invoke(capgains, ['show', filepath, '-t', 'ANET'])
@@ -64,11 +67,13 @@ def test_show_ticker_arg(testfiles_dir, transactions):
 
 
 def test_calc_no_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
-    """Testing the capgains calc command providing no filtering argument"""
-    filepath = create_csv_file(testfiles_dir,
-                               "calctickertest.csv",
-                               transactions_to_list(transactions),
-                               True)
+    """Testing the capgains calc command providing no filtering argument."""
+    filepath = create_csv_file(
+        testfiles_dir,
+        "calctickertest.csv",
+        transactions_to_list(transactions),
+        True
+    )
 
     runner = CliRunner()
     result = runner.invoke(capgains, ['calc', filepath, '2018'])
@@ -90,11 +95,13 @@ No capital gains
 
 
 def test_calc_ticker_arg(testfiles_dir, transactions, exchange_rates_mock):
-    """Testing the capgains calc command and providing a ticker"""
-    filepath = create_csv_file(testfiles_dir,
-                               "calctickertest.csv",
-                               transactions_to_list(transactions),
-                               True)
+    """Testing the capgains calc command and providing a ticker."""
+    filepath = create_csv_file(
+        testfiles_dir,
+        "calctickertest.csv",
+        transactions_to_list(transactions),
+        True
+    )
 
     runner = CliRunner()
     result = runner.invoke(capgains, ['calc', filepath, '2018', '-t', 'ANET'])
@@ -113,11 +120,13 @@ ANET-2018
 
 
 def test_calc_no_year(testfiles_dir, transactions):
-    """Testing the capgains calc command without a year"""
-    filepath = create_csv_file(testfiles_dir,
-                               "calctickertest.csv",
-                               transactions_to_list(transactions),
-                               True)
+    """Testing the capgains calc command without a year."""
+    filepath = create_csv_file(
+        testfiles_dir,
+        "calctickertest.csv",
+        transactions_to_list(transactions),
+        True
+    )
 
     runner = CliRunner()
     result = runner.invoke(capgains, ['calc', filepath, '-t', 'ANET'])

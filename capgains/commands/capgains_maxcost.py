@@ -7,7 +7,7 @@ from capgains.ticker_gains import TickerGains
 
 # describes how to align the individual table columns
 colalign = (
-    "left",   # ticker
+    "left",  # ticker
     "right",  # max cost
     "right",  # year end
 )
@@ -21,7 +21,9 @@ def _get_max_cost(transactions, year, year_min):
         max_cost = max(max_cost, t.cumulative_cost)
 
     # check against end of last year
-    max_cost = max(max_cost, _get_year_end_cost(transactions, year-1, year_min))  # noqa: E501
+    max_cost = max(
+        max_cost, _get_year_end_cost(transactions, year - 1, year_min)
+    )  # noqa: E501
 
     return max_cost
 
@@ -35,19 +37,23 @@ def _get_year_end_cost(transactions, year, year_min):
         if year <= year_min:
             return 0
 
-        return _get_year_end_cost(transactions, year-1, year_min)
+        return _get_year_end_cost(transactions, year - 1, year_min)
 
-    return transactions_to_report[len(transactions_to_report)-1].cumulative_cost  # noqa: E501
+    return transactions_to_report[len(transactions_to_report) -
+                                  1].cumulative_cost  # noqa: E501
 
 
 def _get_map_of_currencies_to_exchange_rates(transactions):
-    """First, split the list of transactions into sublists where each sublist
-    will only contain transactions with the same currency"""
+    """First, split the list of txs into sublists where each sublist
+    will only contain transactions with the same currency."""
 
-    contiguous_currencies = sorted(transactions.transactions,
-                                   key=lambda t: t.currency)
-    currency_groups = [list(g) for _, g in groupby(contiguous_currencies,
-                                                   lambda t: t.currency)]
+    contiguous_currencies = sorted(
+        transactions.transactions, key=lambda t: t.currency
+    )
+    currency_groups = [
+        list(g)
+        for _, g in groupby(contiguous_currencies, lambda t: t.currency)
+    ]
     currencies_to_exchange_rates = dict()
     # Create a separate ExchangeRate object for each currency
     for currency_group in currency_groups:
@@ -55,13 +61,15 @@ def _get_map_of_currencies_to_exchange_rates(transactions):
         min_date = currency_group[0].date
         max_date = currency_group[-1].date
         currencies_to_exchange_rates[currency] = ExchangeRate(
-            currency, min_date, max_date)
+            currency, min_date, max_date
+        )
     return currencies_to_exchange_rates
 
 
 def calculate_costs(transactions, year, ticker):
-    ticker_transactions = transactions.filter_by(tickers=[ticker],
-                                                 max_year=year)
+    ticker_transactions = transactions.filter_by(
+        tickers=[ticker], max_year=year
+    )
     er_map = _get_map_of_currencies_to_exchange_rates(ticker_transactions)
     tg = TickerGains(ticker)
     tg.add_transactions(ticker_transactions, er_map)
@@ -69,10 +77,10 @@ def calculate_costs(transactions, year, ticker):
 
 
 def capgains_maxcost(transactions, year, tickers=None, output_format='table'):
-    """Take a list of transactions and output the calculated costs.
-    
+    """Take a list of txs and output the calculated costs.
+
     Args:
-        transactions: List of transactions to process
+        transactions: list of txs to process
         year: Year to calculate costs for
         tickers: Optional list of tickers to filter by
         output_format: Output format ('table' or 'json')
@@ -88,18 +96,22 @@ def capgains_maxcost(transactions, year, tickers=None, output_format='table'):
     if output_format == 'json':
         results = {}
         for ticker in filtered_transactions.tickers:
-            transactions_to_report = calculate_costs(filtered_transactions, year, ticker)
+            transactions_to_report = calculate_costs(
+                filtered_transactions, year, ticker
+            )
             if not transactions_to_report:
                 results[ticker] = {
-                    'year': year,
-                    'max_cost': 0,
-                    'year_end_cost': 0
+                    'year': year, 'max_cost': 0, 'year_end_cost': 0
                 }
                 continue
-            
-            max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)
-            year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)
-            
+
+            max_cost = _get_max_cost(
+                transactions_to_report, year, transactions_to_report.year_min
+            )
+            year_end_cost = _get_year_end_cost(
+                transactions_to_report, year, transactions_to_report.year_min
+            )
+
             results[ticker] = {
                 'year': year,
                 'max_cost': float(max_cost),
@@ -111,13 +123,19 @@ def capgains_maxcost(transactions, year, tickers=None, output_format='table'):
     # Original table output format
     for ticker in filtered_transactions.tickers:
         click.echo("{}-{}".format(ticker, year))
-        transactions_to_report = calculate_costs(filtered_transactions, year, ticker)
+        transactions_to_report = calculate_costs(
+            filtered_transactions, year, ticker
+        )
         if not transactions_to_report:
             click.echo("Nothing to report\n")
             continue
 
-        max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)
-        year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)
+        max_cost = _get_max_cost(
+            transactions_to_report, year, transactions_to_report.year_min
+        )
+        year_end_cost = _get_year_end_cost(
+            transactions_to_report, year, transactions_to_report.year_min
+        )
 
         click.echo("[Max cost = {0:,.2f}]".format(max_cost))
         click.echo("[Year end = {0:,.2f}]\n".format(year_end_cost))

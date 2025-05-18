@@ -34,17 +34,19 @@ keywords = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 click = "^7.1.2"
 tabulate = "^0.8.7"
 requests = "^2.23.0"
+yapf = "^0.43.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"
 tox = "^3.15.0"
 requests-mock = "^1.8.0"
-flake8 = "^3.8.3"
+flake8 = "^6.1.0"
 pytest-cov = "^2.10.1"
+flake8-pyproject = "^1.2.3"
 
 [tool.poetry.scripts]
 capgains = "capgains.cli:capgains"
@@ -52,3 +54,46 @@ capgains = "capgains.cli:capgains"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.flake8]
+max-line-length = 79
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv/**/*",
+    "*.egg-info"
+]
+
+
+[tool.yapf]
+based_on_style = "pep8"
+column_limit = 79
+split_before_logical_operator = true
+split_before_first_argument = true
+dedent_closing_brackets = true
+split_complex_comprehension = true
+split_all_top_level_comma_separated_values = true
+split_before_dot = true
+split_before_expression_after_opening_paren = true
+align_closing_bracket_with_visual_indent = true
+split_arguments_when_comma_terminated = true
+join_multiple_lines = false
+allow_split_before_dict_value = false
+coalesce_brackets = false
+allow_multiline_dictionary_keys = false
+allow_multiline_lambdas = false
+each_dict_entry_on_separate_line = true
+i18n_function_call = ["fmt.format"]
+
+[tool.yapfignore]
+ignore_patterns = [
+  ".git/**/*",
+  "__pycache__/*",
+  "build/*",
+  "dist/*",
+  ".venv/**/*",
+  "*.egg-info"
+]
+

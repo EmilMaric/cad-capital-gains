@@ -2,10 +2,19 @@ from decimal import Decimal
 
 
 class Transaction:
-    """Represents a transaction entry from the CSV-file"""
+    """Represents a transaction entry from the CSV-file."""
 
-    def __init__(self, date, description, ticker, action, qty, price,
-                 commission, currency):
+    def __init__(
+        self,
+        date,
+        description,
+        ticker,
+        action,
+        qty,
+        price,
+        commission,
+        currency
+    ):
         self._date = date
         self._description = description
         self._ticker = ticker
