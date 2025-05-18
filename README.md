@@ -3,6 +3,9 @@ Canadian Capital Gains CLI Tool
 [![Build Status](https://travis-ci.org/EmilMaric/cad-capital-gains.svg?branch=master)](https://travis-ci.org/EmilMaric/cad-capital-gains)
 [![codecov](https://codecov.io/gh/EmilMaric/cad-capital-gains/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilMaric/cad-capital-gains)
 
+⚠️ **IMPORTANT LEGAL NOTICE**: This software is provided "as is" without any warranties. By using this software, you agree to the terms outlined in [LEGAL.md](LEGAL.md). Users MUST read and agree to these terms before using the software.
+
+## Overview
 Calculating your capital gains and tracking your adjusted cost base (ACB) manually, or using an Excel document, often proves to be a laborious process. This CLI tool calculates your capital gains and ACB for you, and just requires a CSV file with basic information about your transactions. The idea with this tool is that you are able to more or less cut-and-copy the output that it genarates and copy it into whatever tax filing software you end up using.
 
 ## Features:
@@ -13,6 +16,32 @@ Calculating your capital gains and tracking your adjusted cost base (ACB) manual
     - There is a non-zero balance of shares sharing the same ticker at the end of the 61 day window (30 days after the sale)
 - Outputs the running adjusted cost base (ACB) for every transaction with a non-superficial capital gain/loss
 - Supports fractional quantities of shares
+
+## T1135 Foreign Income Verification Statement
+The T1135 form is a requirement from the Canada Revenue Agency (CRA) for Canadian residents who own specified foreign property with a total cost of more than CAD $100,000 at any time during the tax year. This includes foreign securities held in Canadian brokerage accounts.
+
+### When is T1135 Required?
+You must file a T1135 if:
+- You are a Canadian resident for tax purposes
+- You owned specified foreign property (including foreign stocks) with a total cost exceeding CAD $100,000 at any time during the year
+- The securities are held for investment purposes (not personal use)
+
+### How This Tool Helps with T1135
+This tool provides the `maxcost` command to help with T1135 reporting:
+```bash
+$ capgains maxcost sample.csv 2023
+```
+This command will:
+- Calculate the maximum cost of your foreign securities during the tax year
+- Show the maximum cost in CAD using official Bank of Canada exchange rates
+- Alert you if your holdings exceed the T1135 reporting threshold
+- Break down the maximum cost by ticker for detailed reporting
+
+### Important Notes:
+- The tool uses the Bank of Canada's noon rates (pre-2017) and indicative rates (post-2017) for currency conversion
+- Maximum cost is calculated based on the adjusted cost base (ACB) of your holdings
+- The tool considers both buying and selling activities throughout the year
+- If your maximum cost exceeds CAD $100,000, ensure you file form T1135 with your tax return to avoid penalties
 
 # Installation
 ```bash
@@ -65,6 +94,19 @@ $ capgains calc sample.csv 2017 -t GOOG
 $ capgains show sample.csv -t GOOG
 ...
 ```
+
+To calculate the maximum cost of your foreign securities for T1135 reporting:
+```bash
+$ capgains maxcost sample.csv 2023
+GOOG-2023 Maximum Cost
++------------+-----------+------------+
+| ticker     | currency  | max cost   |
+|------------+-----------+------------|
+| GOOG       | USD      | 5,010.00   |
++------------+-----------+------------+
+Maximum cost in CAD: 6,762.51
+```
+
 For additional commands and options, run one of the following:
 ```bash
 $ capgains --help
@@ -72,9 +114,3 @@ $ capgains --help
 $ capgains <command> --help
 ```
 You can take this output and plug it into your favourite tax software (Simpletax, StudioTax, etc) and verify that the capital gains/losses that the tax software reports lines up with what the output of this command says.
-
-# Finding issues
-If you find issues using this tool, please create an Issue using the [Github issue tracker](https://github.com/EmilMaric/cad-capital-gains/issues) and one of us will try to fix it.
-
-# Contributing
-If you would like to contribute, please read the [CONTRIBUTING.md](https://github.com/EmilMaric/cad-capital-gains/blob/master/CONTRIBUTING.md) page
