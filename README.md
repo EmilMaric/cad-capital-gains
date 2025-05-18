@@ -29,6 +29,61 @@ Calculating your capital gains and tracking your adjusted cost base (ACB) manual
     - There is a non-zero balance of shares sharing the same ticker at the end of the 61 day window
 - Support fractional quantities of shares
 
+## Commission Handling and Calculations
+### Commission Handling
+- Buy transactions: Commissions are added to the adjusted cost base (ACB)
+- Sell transactions: Commissions are subtracted from proceeds
+- Currency conversion: For USD transactions, commissions are converted to CAD using the same exchange rate as the transaction
+- Commissions are always included in the cost base calculation for tax purposes
+
+### Calculation Methodology
+The tool follows these steps when calculating capital gains:
+
+1. For buy transactions:
+   - Convert the share price to CAD if in USD
+   - Convert the commission to CAD if in USD
+   - Calculate total cost: (quantity × price × exchange_rate) + (commission × exchange_rate)
+   - Add to the adjusted cost base (ACB)
+
+2. For sell transactions:
+   - Convert the share price to CAD if in USD
+   - Convert the commission to CAD if in USD
+   - Calculate proceeds: (quantity × price × exchange_rate)
+   - Subtract commission: proceeds - (commission × exchange_rate)
+   - Calculate capital gain/loss: proceeds - commission - ACB
+
+3. Special considerations:
+   - All calculations maintain precision to avoid rounding errors
+   - Exchange rates are fetched from the Bank of Canada for the specific transaction date
+   - In superficial loss scenarios, commissions are still included in the original calculations before the loss is denied
+
+#### Examples
+1. Buy transaction in USD:
+```
+Buy 100 shares at $50.00 USD with $9.99 USD commission
+Exchange rate: 2.0 CAD/USD
+ACB = (100 × $50.00 × 2.0) + ($9.99 × 2.0)
+    = $10,000.00 + $19.98
+    = $10,019.98 CAD
+```
+
+2. Sell transaction in USD:
+```
+Sell 50 shares at $55.00 USD with $9.99 USD commission
+Exchange rate: 2.0 CAD/USD
+Proceeds = (50 × $55.00 × 2.0) - ($9.99 × 2.0)
+        = $5,500.00 - $19.98
+        = $5,480.02 CAD
+```
+
+3. Mixed currency example:
+```
+Buy 100 shares at $25.00 CAD with $9.99 CAD commission
+ACB = (100 × $25.00) + $9.99
+    = $2,500.00 + $9.99
+    = $2,509.99 CAD
+```
+
 ### Important Notes
 - The tool uses the Bank of Canada's noon rates (pre-2017) and indicative rates (post-2017) for currency conversion
 - Maximum cost is calculated based on the adjusted cost base (ACB) of your holdings
