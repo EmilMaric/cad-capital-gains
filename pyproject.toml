@@ -62,8 +62,10 @@ exclude = [
     "__pycache__",
     "build",
     "dist",
-    ".venv/**/*",
-    "*.egg-info"
+    ".venv",
+    "*.egg-info",
+    ".tox",
+    ".pytest_cache"
 ]
 
 
