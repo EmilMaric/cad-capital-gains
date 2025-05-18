@@ -133,6 +133,10 @@ class TransactionsReader:
                 # Strip whitespace from all fields
                 entry = [field.strip() for field in entry]
                 
+                # Skip empty rows
+                if not any(entry):
+                    continue
+                
                 actual_num_columns = len(entry)
                 expected_num_columns = len(cls.columns)
                 if actual_num_columns != expected_num_columns:
@@ -143,6 +147,15 @@ class TransactionsReader:
                         .format(entry_no,
                                 expected_num_columns,
                                 actual_num_columns))
+
+                # Check for potential header row
+                if entry_no == 0:
+                    potential_headers = [field.lower() for field in entry]
+                    if any(col in potential_headers for col in ['date', 'description', 'ticker', 'action', 'quantity', 'qty', 'price']):
+                        raise ClickException(
+                            "First row appears to be a header row. The CSV file should contain only transaction data without headers.\n"
+                            "Each row should be in the format: YYYY-MM-DD,description,ticker,action,quantity,price,commission,currency")
+
                 date_idx = cls.columns.index("date")
                 date_str = entry[date_idx]
                 try:
@@ -150,6 +163,12 @@ class TransactionsReader:
                         date_str.split(" ")[0],
                         '%Y-%m-%d').date()
                 except ValueError:
+                    if entry_no == 0:
+                        # If this is the first row and date parsing failed, check if it might be a header
+                        if date_str.lower() in ['date', 'dates', 'transaction date']:
+                            raise ClickException(
+                                "First row appears to be a header row. The CSV file should contain only transaction data without headers.\n"
+                                "Each row should be in the format: YYYY-MM-DD,description,ticker,action,quantity,price,commission,currency")
                     raise ClickException(
                         "The date ({}) was not entered in the correct format (YYYY-MM-DD)"
                         .format(date_str))

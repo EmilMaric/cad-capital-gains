@@ -349,3 +349,33 @@ def test_transactions_reader_json_not_chronological(testfiles_dir):
     with pytest.raises(ClickException) as excinfo:
         TransactionsReader.get_transactions(filepath)
     assert "not entered in chronological order" in excinfo.value.message
+
+
+def test_transactions_reader_csv_with_header(testfiles_dir):
+    """Testing TransactionsReader rejects CSV files with headers"""
+    # Create a CSV file with a header row
+    header_row = ['date', 'description', 'ticker', 'action', 'qty', 'price', 'commission', 'currency']
+    transaction_row = ['2018-02-15', 'ESPP PURCHASE', 'ANET', 'BUY', '21', '307.96', '20.99', 'USD']
+    
+    filepath = create_csv_file(testfiles_dir, 'with_header.csv', [header_row, transaction_row], True)
+    
+    with pytest.raises(ClickException) as excinfo:
+        TransactionsReader.get_transactions(filepath)
+    assert "First row appears to be a header row" in excinfo.value.message
+    assert "should contain only transaction data without headers" in excinfo.value.message
+    assert "YYYY-MM-DD,description,ticker,action,quantity,price,commission,currency" in excinfo.value.message
+
+
+def test_transactions_reader_csv_with_text_headers(testfiles_dir):
+    """Testing TransactionsReader rejects CSV files with text headers like 'Date,Description,...'"""
+    # Create a CSV file with text headers
+    header_row = ['Date', 'Description', 'Ticker', 'Action', 'Quantity', 'Price', 'Commission', 'Currency']
+    transaction_row = ['2018-02-15', 'ESPP PURCHASE', 'ANET', 'BUY', '21', '307.96', '20.99', 'USD']
+    
+    filepath = create_csv_file(testfiles_dir, 'with_text_header.csv', [header_row, transaction_row], True)
+    
+    with pytest.raises(ClickException) as excinfo:
+        TransactionsReader.get_transactions(filepath)
+    assert "First row appears to be a header row" in excinfo.value.message
+    assert "should contain only transaction data without headers" in excinfo.value.message
+    assert "YYYY-MM-DD,description,ticker,action,quantity,price,commission,currency" in excinfo.value.message
