@@ -1,0 +1,362 @@
+[
+  {
+    "date": "2022-01-15",
+    "description": "Initial Purchase",
+    "ticker": "AAPL",
+    "action": "BUY",
+    "qty": 100,
+    "price": 142.50,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2022-02-10",
+    "description": "Buy Canadian Bank",
+    "ticker": "TD.TO",
+    "action": "BUY",
+    "qty": 150,
+    "price": 78.25,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2022-03-20",
+    "description": "Buy Tech",
+    "ticker": "GOOGL",
+    "action": "BUY",
+    "qty": 20,
+    "price": 2200.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2022-04-15",
+    "description": "Buy ETF",
+    "ticker": "VFV.TO",
+    "action": "BUY",
+    "qty": 200,
+    "price": 92.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2022-05-01",
+    "description": "Partial Sell",
+    "ticker": "AAPL",
+    "action": "SELL",
+    "qty": 30,
+    "price": 165.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2022-06-15",
+    "description": "Sell Some Bank",
+    "ticker": "TD.TO",
+    "action": "SELL",
+    "qty": 50,
+    "price": 82.75,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2022-07-20",
+    "description": "Add to Position",
+    "ticker": "GOOGL",
+    "action": "BUY",
+    "qty": 15,
+    "price": 2250.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2022-08-30",
+    "description": "More ETF",
+    "ticker": "VFV.TO",
+    "action": "BUY",
+    "qty": 100,
+    "price": 94.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2022-09-15",
+    "description": "Take Profit",
+    "ticker": "GOOGL",
+    "action": "SELL",
+    "qty": 10,
+    "price": 2400.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2022-10-01",
+    "description": "Sell ETF",
+    "ticker": "VFV.TO",
+    "action": "SELL",
+    "qty": 75,
+    "price": 96.25,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2022-11-15",
+    "description": "Add Apple",
+    "ticker": "AAPL",
+    "action": "BUY",
+    "qty": 50,
+    "price": 145.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2022-12-20",
+    "description": "Year-End Sell",
+    "ticker": "AAPL",
+    "action": "SELL",
+    "qty": 40,
+    "price": 150.25,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-01-15",
+    "description": "New Year Buy",
+    "ticker": "AAPL",
+    "action": "BUY",
+    "qty": 100,
+    "price": 150.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-02-01",
+    "description": "Buy Foreign",
+    "ticker": "GOOGL",
+    "action": "BUY",
+    "qty": 25,
+    "price": 2500.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-02-15",
+    "description": "Sell Tech",
+    "ticker": "GOOGL",
+    "action": "SELL",
+    "qty": 15,
+    "price": 2600.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-03-10",
+    "description": "Buy Canadian",
+    "ticker": "TD.TO",
+    "action": "BUY",
+    "qty": 200,
+    "price": 82.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-03-20",
+    "description": "Buy More ETF",
+    "ticker": "VFV.TO",
+    "action": "BUY",
+    "qty": 150,
+    "price": 95.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-04-01",
+    "description": "Buy Bank",
+    "ticker": "RY.TO",
+    "action": "BUY",
+    "qty": 150,
+    "price": 125.75,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-04-15",
+    "description": "Take ETF Profit",
+    "ticker": "VFV.TO",
+    "action": "SELL",
+    "qty": 100,
+    "price": 97.25,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-05-01",
+    "description": "Sell Some Bank",
+    "ticker": "TD.TO",
+    "action": "SELL",
+    "qty": 75,
+    "price": 85.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-06-20",
+    "description": "Buy More Apple",
+    "ticker": "AAPL",
+    "action": "BUY",
+    "qty": 50,
+    "price": 175.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-07-15",
+    "description": "Partial Sell Apple",
+    "ticker": "AAPL",
+    "action": "SELL",
+    "qty": 60,
+    "price": 180.25,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-08-01",
+    "description": "Add Bank Position",
+    "ticker": "RY.TO",
+    "action": "BUY",
+    "qty": 100,
+    "price": 128.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-09-15",
+    "description": "Sell Bank Profit",
+    "ticker": "RY.TO",
+    "action": "SELL",
+    "qty": 80,
+    "price": 132.75,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-10-01",
+    "description": "More ETF",
+    "ticker": "VFV.TO",
+    "action": "BUY",
+    "qty": 125,
+    "price": 98.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2023-11-15",
+    "description": "Tech Profit",
+    "ticker": "GOOGL",
+    "action": "SELL",
+    "qty": 10,
+    "price": 2800.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-12-15",
+    "description": "Year End Rebalance",
+    "ticker": "AAPL",
+    "action": "SELL",
+    "qty": 40,
+    "price": 200.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2023-12-20",
+    "description": "Reduce ETF",
+    "ticker": "VFV.TO",
+    "action": "SELL",
+    "qty": 50,
+    "price": 99.75,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2024-01-10",
+    "description": "New Position",
+    "ticker": "MSFT",
+    "action": "BUY",
+    "qty": 75,
+    "price": 375.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2024-01-25",
+    "description": "Quick Trade",
+    "ticker": "MSFT",
+    "action": "SELL",
+    "qty": 25,
+    "price": 390.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2024-02-01",
+    "description": "Add Apple",
+    "ticker": "AAPL",
+    "action": "BUY",
+    "qty": 80,
+    "price": 185.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2024-02-15",
+    "description": "Take Some Profit",
+    "ticker": "AAPL",
+    "action": "SELL",
+    "qty": 30,
+    "price": 195.00,
+    "commission": 9.99,
+    "currency": "USD"
+  },
+  {
+    "date": "2024-03-01",
+    "description": "New Tech Stock",
+    "ticker": "SHOP.TO",
+    "action": "BUY",
+    "qty": 100,
+    "price": 95.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2024-03-15",
+    "description": "More ETF",
+    "ticker": "VFV.TO",
+    "action": "BUY",
+    "qty": 150,
+    "price": 98.75,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2024-03-30",
+    "description": "Sell Some Shop",
+    "ticker": "SHOP.TO",
+    "action": "SELL",
+    "qty": 30,
+    "price": 98.25,
+    "commission": 9.99,
+    "currency": "CAD"
+  },
+  {
+    "date": "2024-04-10",
+    "description": "ETF Profit",
+    "ticker": "VFV.TO",
+    "action": "SELL",
+    "qty": 75,
+    "price": 101.50,
+    "commission": 9.99,
+    "currency": "CAD"
+  }
+] 

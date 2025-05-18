@@ -1,4 +1,5 @@
 import click
+import json
 from itertools import groupby
 
 from capgains.exchange_rate import ExchangeRate
@@ -67,23 +68,56 @@ def calculate_costs(transactions, year, ticker):
     return ticker_transactions
 
 
-def capgains_maxcost(transactions, year, tickers=None):
-    """Take a list of transactions and print the calculated costs
-     in a separate tabular format for each specified ticker."""
+def capgains_maxcost(transactions, year, tickers=None, output_format='table'):
+    """Take a list of transactions and output the calculated costs.
+    
+    Args:
+        transactions: List of transactions to process
+        year: Year to calculate costs for
+        tickers: Optional list of tickers to filter by
+        output_format: Output format ('table' or 'json')
+    """
     filtered_transactions = transactions.filter_by(tickers=tickers)
     if not filtered_transactions:
-        click.echo("No transactions available")
+        if output_format == 'json':
+            click.echo(json.dumps({'error': 'No transactions available'}))
+        else:
+            click.echo("No transactions available")
         return
+
+    if output_format == 'json':
+        results = {}
+        for ticker in filtered_transactions.tickers:
+            transactions_to_report = calculate_costs(filtered_transactions, year, ticker)
+            if not transactions_to_report:
+                results[ticker] = {
+                    'year': year,
+                    'max_cost': 0,
+                    'year_end_cost': 0
+                }
+                continue
+            
+            max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)
+            year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)
+            
+            results[ticker] = {
+                'year': year,
+                'max_cost': float(max_cost),
+                'year_end_cost': float(year_end_cost)
+            }
+        click.echo(json.dumps(results, indent=2))
+        return
+
+    # Original table output format
     for ticker in filtered_transactions.tickers:
         click.echo("{}-{}".format(ticker, year))
-        transactions_to_report = calculate_costs(filtered_transactions, year,
-                                                 ticker)
+        transactions_to_report = calculate_costs(filtered_transactions, year, ticker)
         if not transactions_to_report:
             click.echo("Nothing to report\n")
             continue
 
-        max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)  # noqa: E501
-        year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)  # noqa: E501
+        max_cost = _get_max_cost(transactions_to_report, year, transactions_to_report.year_min)
+        year_end_cost = _get_year_end_cost(transactions_to_report, year, transactions_to_report.year_min)
 
         click.echo("[Max cost = {0:,.2f}]".format(max_cost))
         click.echo("[Year end = {0:,.2f}]\n".format(year_end_cost))

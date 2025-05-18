@@ -1,5 +1,6 @@
 import click
 import tabulate
+import json
 from itertools import groupby
 
 from capgains.exchange_rate import ExchangeRate
@@ -16,6 +17,20 @@ colalign = (
     "right",  # commission
     "right",  # capital gain
 )
+
+
+def _transaction_to_dict(transaction):
+    """Convert a transaction to a dictionary for JSON output"""
+    return {
+        'date': transaction.date.isoformat(),
+        'description': transaction.description,
+        'ticker': transaction.ticker,
+        'quantity': float(transaction.qty.normalize()),
+        'proceeds': float(transaction.proceeds),
+        'acb': float(transaction.acb),
+        'outlays': float(transaction.expenses),
+        'capital_gain': float(transaction.capital_gain)
+    }
 
 
 def _get_total_gains(transactions):
@@ -54,17 +69,48 @@ def calculate_gains(transactions, year, ticker):
                                          superficial_loss=False)
 
 
-def capgains_calc(transactions, year, tickers=None):
-    """Take a list of transactions and print the calculated capital
-    gains in a separate tabular format for each specified ticker."""
+def capgains_calc(transactions, year, tickers=None, output_format='table'):
+    """Take a list of transactions and output the calculated capital gains.
+    
+    Args:
+        transactions: List of transactions to process
+        year: Year to calculate gains for
+        tickers: Optional list of tickers to filter by
+        output_format: Output format ('table' or 'json')
+    """
     filtered_transactions = transactions.filter_by(tickers=tickers)
     if not filtered_transactions:
-        click.echo("No transactions available")
+        if output_format == 'json':
+            click.echo(json.dumps({'error': 'No transactions available'}))
+        else:
+            click.echo("No transactions available")
         return
+
+    if output_format == 'json':
+        results = {}
+        for ticker in filtered_transactions.tickers:
+            transactions_to_report = calculate_gains(filtered_transactions, year, ticker)
+            if not transactions_to_report:
+                results[ticker] = {
+                    'year': year,
+                    'total_gains': 0,
+                    'transactions': []
+                }
+                continue
+            
+            total_gains = _get_total_gains(transactions_to_report)
+            results[ticker] = {
+                'year': year,
+                'total_gains': float(total_gains),
+                'transactions': [_transaction_to_dict(t) for t in transactions_to_report]
+            }
+        click.echo(json.dumps(results, indent=2))
+        return
+
+    # Original table output format
     for ticker in filtered_transactions.tickers:
         click.echo("{}-{}".format(ticker, year))
-        transactions_to_report = calculate_gains(filtered_transactions, year,
-                                                 ticker)
+        transactions_to_report = calculate_gains(filtered_transactions, year, ticker)
         if not transactions_to_report:
             click.echo("No capital gains\n")
             continue

@@ -1,5 +1,6 @@
 import click
 import tabulate
+import json
 from itertools import groupby
 
 from capgains.exchange_rate import ExchangeRate
@@ -16,6 +17,23 @@ colalign = (
     "right",  # commission
     "right",  # currency
 )
+
+
+def _transaction_to_dict(transaction, show_exchange_rate=False):
+    """Convert a transaction to a dictionary for JSON output"""
+    result = {
+        'date': transaction.date.isoformat(),
+        'description': transaction.description,
+        'ticker': transaction.ticker,
+        'action': transaction.action,
+        'quantity': float(transaction.qty.normalize()),
+        'price': float(transaction.price),
+        'commission': float(transaction.commission),
+        'currency': transaction.currency
+    }
+    if show_exchange_rate:
+        result['exchange_rate'] = float(transaction.exchange_rate)
+    return result
 
 
 def _get_map_of_currencies_to_exchange_rates(transactions):
@@ -42,20 +60,39 @@ def _add_rates(transactions, exchange_rates):
         t.add_rate(exchange_rates)
 
 
-def capgains_show(transactions, show_exchange_rate, tickers=None):
-    """Take a list of transactions and print them in tabular format."""
+def capgains_show(transactions, show_exchange_rate, tickers=None, output_format='table'):
+    """Take a list of transactions and output them in the specified format.
+    
+    Args:
+        transactions: List of transactions to show
+        show_exchange_rate: Whether to include exchange rates
+        tickers: Optional list of tickers to filter by
+        output_format: Output format ('table' or 'json')
+    """
     filtered_transactions = transactions.filter_by(tickers=tickers)
 
     if not filtered_transactions:
-        click.echo("No results found")
+        if output_format == 'json':
+            click.echo(json.dumps({'error': 'No results found'}))
+        else:
+            click.echo("No results found")
         return
 
+    if show_exchange_rate:
+        er_map = _get_map_of_currencies_to_exchange_rates(filtered_transactions)
+        _add_rates(filtered_transactions, er_map)
+
+    if output_format == 'json':
+        results = {
+            'transactions': [_transaction_to_dict(t, show_exchange_rate) for t in filtered_transactions]
+        }
+        click.echo(json.dumps(results, indent=2))
+        return
+
+    # Original table output format
     headers = None
     rows = None
     if show_exchange_rate:
-        er_map = _get_map_of_currencies_to_exchange_rates(filtered_transactions)  # noqa: E501
-        _add_rates(filtered_transactions, er_map)
-
         headers = ["date", "description", "ticker", "action", "qty", "price",
                    "commission", "currency", "exchange"]
         rows = [[
@@ -69,7 +106,6 @@ def capgains_show(transactions, show_exchange_rate, tickers=None):
             t.currency,
             t.exchange_rate
         ] for t in filtered_transactions]
-
     else:
         headers = ["date", "description", "ticker", "action", "qty", "price",
                    "commission", "currency"]
