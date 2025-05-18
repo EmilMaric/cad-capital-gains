@@ -21,7 +21,10 @@ class TickerGains:
     def _superficial_window_filter(self, transaction, min_date, max_date):
         """Filter out BUY transactions that fall within
         the 61 day superficial loss window"""
-        return transaction.date >= min_date and transaction.date <= max_date
+        # Only consider transactions for the same ticker
+        return (transaction.ticker == self._ticker and
+                transaction.date >= min_date and
+                transaction.date <= max_date)
 
     def _is_superficial_loss(self, transaction, transactions):
         """Figures out if the transaction is a superficial loss"""
