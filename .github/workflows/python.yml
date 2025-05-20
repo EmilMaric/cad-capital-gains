@@ -30,7 +30,7 @@ jobs:
 
     - name: Run tests
       run: |
-        tox
+        tox -e py
         flake8
 
 # TODO: Go over Codecov setup and then re-enable
