@@ -29,14 +29,12 @@ jobs:
         poetry install -v
 
     - name: Run tests
-      run: |
-        tox
-        flake8
+      run: tox
 
-# TODO: Go over Codecov setup and then re-enable
-#    - name: Upload coverage to Codecov
-#      env:
-#        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-#      run: |
-#        codecov
-#        bash <(curl -s https://codecov.io/bash)
+    - name: Run linter
+      run: flake8
+
+    - name: Upload coverage reports to Codecov with GitHub Action
+      uses: codecov/codecov-action@v5
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
