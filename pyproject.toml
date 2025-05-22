@@ -38,14 +38,14 @@ python = "^3.10"
 click = "^7.1.2"
 tabulate = "^0.8.7"
 requests = "^2.23.0"
-flake8-pyproject = "^1.2.3"
-pytest-cov = "^6.1.1"
-tox = "^4.26.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"
 requests-mock = "^1.8.0"
 flake8 = "^6.1.0"
+tox = "^4.26.0"
+pytest-cov = "^6.1.1"
+flake8-pyproject = "^1.2.3"
 
 [tool.poetry.scripts]
 capgains = "capgains.cli:capgains"
