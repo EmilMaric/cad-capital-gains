@@ -1,9 +1,8 @@
-name: CAD Capgains CI
+name: Build
 
 on:
   push:
-    branches: [ master ]
-    tags: [ '*' ]
+    branches: master
   pull_request:
 
 jobs:
