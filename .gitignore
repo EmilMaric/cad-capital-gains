@@ -15,3 +15,9 @@
 
 # Mac
 .DS_Store*
+
+# Virtual environment
+.venv/
+
+# Python dist folder
+dist/

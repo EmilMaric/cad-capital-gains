@@ -1,6 +1,6 @@
 Canadian Capital Gains CLI Tool
 =
-[![Build Status](https://travis-ci.org/EmilMaric/cad-capital-gains.svg?branch=master)](https://travis-ci.org/EmilMaric/cad-capital-gains)
+[![Build](https://github.com/EmilMaric/cad-capital-gains/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/EmilMaric/cad-capital-gains/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/EmilMaric/cad-capital-gains/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilMaric/cad-capital-gains)
 
 Calculating your capital gains and tracking your adjusted cost base (ACB) manually, or using an Excel document, often proves to be a laborious process. This CLI tool calculates your capital gains and ACB for you, and just requires a CSV file with basic information about your transactions. The idea with this tool is that you are able to more or less cut-and-copy the output that it genarates and copy it into whatever tax filing software you end up using.
